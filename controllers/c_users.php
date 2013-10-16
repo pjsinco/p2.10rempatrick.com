@@ -10,7 +10,43 @@ class users_controller extends base_controller
     echo "users_controller constructor just called<br><br>";
   } 
 
-  //debug
+  // for fun
+  public function all_globals()
+  {
+    echo '<pre>';  
+    echo '<br>$_ENV<br>';
+    print_r($_ENV);
+    echo '<br>$_SERVER<br>';
+    print_r($_SERVER);
+    echo '<br>$_GET<br>';
+    print_r($_GET);
+    echo '<br>$_POST<br>';
+    print_r($_POST);
+    echo '<br>$_FILES<br>';
+    print_r($_FILES);
+    echo '<br>$_REQUEST<br>';
+    print_r($_REQUEST);
+    echo '<br>$_SESSION<br>';
+    print_r($_SESSION);
+    echo '<br>$_COOKIE<br>';
+    print_r($_COOKIE);
+    echo '<br>$argc<br>';
+    print_r($argc);
+    echo '<br>$argv<br>';
+    print_r($argv);
+    echo '<br><br><br><br>';
+    echo '</pre>';  
+  }
+
+  // for fun
+  public function env()
+  {
+    echo '<pre>';  
+    print_r($_ENV);
+    echo '</pre>';  
+  } 
+
+  // for fun
   public function global_server()
   {
     echo '<pre>';  
