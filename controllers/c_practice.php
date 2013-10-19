@@ -14,8 +14,14 @@ class practice_controller extends base_controller
   {
     require(APP_PATH . '/libraries/Image.php');
     echo 'you are looking at test1';
-    $imageOjb = new Image('/Users/pj/Desktop/miguel.jpg');
-    print_r($imageObj);
+    $imageObj = new Image('http://placekitten.com/1000/1000');
+    $imageObj->resize(200, 200);
+    $imageObj->display();
+  }
+  
+  public function test2()
+  {
+    echo Time::now();
   }
 
 

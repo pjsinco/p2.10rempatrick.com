@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 class Image
 {
   protected $image;
@@ -20,11 +19,13 @@ class Image
     $this->width = $info[0];
     $this->height = $info[0];
     $this->mimetype = $info['mime'];
+
+    echo $this->mimetype;
   }
 
   public function display()
   {
-    header("Content-Type: $this->mimetype");
+    header('{Content-Type: $this->mimetype}');
     switch ($this->mimetype) {
       case 'image/jpeg':
         imagejpeg($this->image);

@@ -7,7 +7,6 @@ class users_controller extends base_controller
   public function __construct() 
   {
     parent::__construct();
-    echo "users_controller constructor just called<br><br>";
   } 
 
   // for fun
@@ -76,15 +75,28 @@ class users_controller extends base_controller
 
   public function profile($user_name = NULL)
   {
-    if ($user_name == NULL) {
-      echo "No user specified";
-    } else {
-      echo "This is the profile for " . $user_name;
-    }
+
+    /* SET UP THE VIEW */
+    // note: we can say $this->template because
+    // $this->template is already set up for us in
+    // base_controller.
+    // cool: add title on the fly!
+    $this->template->title = 'Users profile page';
+  
+    /* PASS DATA TO THE VIEW */
+    $this->template->content = View::instance('v_users_profile');
+    $this->template->content->user_name = $user_name;
+    $this->template->content->color = 'linen';
+
+    /* DISPLAY
+    echo $this->template;
+
+//    if ($user_name == NULL) {
+//      echo "No user specified";
+//    } else {
+//      echo "This is the profile for " . $user_name;
+//    }
   }
-
-
-
 
 }
 
