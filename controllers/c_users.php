@@ -83,12 +83,25 @@ class users_controller extends base_controller
     // cool: add title on the fly!
     $this->template->title = 'Users profile page';
   
+    /* Make array of all files to go into head of document */
+    $client_files_head = Array('/css/profiles.css', 
+      '/css/profiles.css');
+    $client_files_body = Array('/js/sample-app.js');
+    
+    /* Load client files */
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
     $this->template->content->user_name = $user_name;
     $this->template->content->color = 'linen';
 
-    /* DISPLAY
+    /* Load client files */
+    $this->template->client_files_body = 
+      Utils::load_client_files($client_files_head);
+
+    /* DISPLAY */
     echo $this->template;
 
 //    if ($user_name == NULL) {
