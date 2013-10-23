@@ -22,7 +22,7 @@ class index_controller extends base_controller {
 		$this->template->title = "Welcome to ArgyBargy";
 	
 		# CSS/JS includes
-			$client_files_head = Array('/css/master.css');
+			$client_files_head = Array('/css/main.css');
 	    	$this->template->client_files_head = Utils::load_client_files($client_files_head);
 	    	
 			//$client_files_body = Array("");

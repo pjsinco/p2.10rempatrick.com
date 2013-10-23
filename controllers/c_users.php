@@ -36,7 +36,7 @@ class users_controller extends base_controller
 
     $this->template->title = 'Sign up for ArgyBargy';
     $client_files_head = Array(
-      '/css/master.css'
+      '/css/main.css'
     );
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
@@ -152,7 +152,7 @@ class users_controller extends base_controller
   public function edit_profile()
   {
     $this->template->title= 'Edit profile';
-    $client_files_head = Array('/css/master.css');
+    $client_files_head = Array('/css/main.css');
 
     /* Load client files */
     $this->template->client_files_head = 
@@ -178,7 +178,7 @@ class users_controller extends base_controller
     
     /* Make array of all files to go into head of document */
     $client_files_head = Array(
-      '/css/master.css'
+      '/css/main.css'
     );
     //$client_files_body = Array('/js/sample-app.js');
     
