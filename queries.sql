@@ -1,3 +1,5 @@
+delete from users
+    where user_id = 4
 
 update users
   set email = 'joe@gmail.com'

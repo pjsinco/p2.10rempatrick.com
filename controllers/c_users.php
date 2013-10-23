@@ -9,49 +9,6 @@ class users_controller extends base_controller
     parent::__construct();
   } 
   
-  // for fun
-  public function all_globals()
-  {
-    echo '<pre>';  
-    echo '<br>$_ENV<br>';
-    print_r($_ENV);
-    echo '<br>$_SERVER<br>';
-    print_r($_SERVER);
-    echo '<br>$_GET<br>';
-    print_r($_GET);
-    echo '<br>$_POST<br>';
-    print_r($_POST);
-    echo '<br>$_FILES<br>';
-    print_r($_FILES);
-    echo '<br>$_REQUEST<br>';
-    print_r($_REQUEST);
-    echo '<br>$_SESSION<br>';
-    print_r($_SESSION);
-    echo '<br>$_COOKIE<br>';
-    print_r($_COOKIE);
-    echo '<br>$argc<br>';
-    print_r($argc);
-    echo '<br>$argv<br>';
-    print_r($argv);
-    echo '<br><br><br><br>';
-    echo '</pre>';  
-  }
-  
-  // for fun
-  public function env()
-  {
-    echo '<pre>';  
-    print_r($_ENV);
-    echo '</pre>';  
-  } 
-  
-  // for fun
-  public function global_server()
-  {
-    echo '<pre>';  
-    print_r($_SERVER);
-    echo '</pre>';  
-  } 
   
   public function index() 
   {
@@ -72,17 +29,18 @@ class users_controller extends base_controller
   */
   public function signup()
   {
-    $this->template->title = 'Sign-up page';
+    /********************************************************/
+    /*          DON"T APPPEND .php          */
+    /********************************************************/
+    $this->template->content = View::instance('v_users_signup');
+
+    $this->template->title = 'Sign up for ArgyBargy';
     $client_files_head = Array(
       '/css/master.css'
     );
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
     
-    /********************************************************/
-    /*          DON"T APPPEND .php          */
-    /********************************************************/
-    $this->template->content = View::instance('v_users_signup');
     
 //    $this->template->client_files_body = 
 //      Utils::load_client_files($client_files_body);
@@ -92,9 +50,11 @@ class users_controller extends base_controller
   
   public function p_signup()
   {
-    echo '<pre>';
-    print_r(time());
-    echo '</pre>';
+    //echo '<pre>';
+    //print_r(time());
+    //echo '</pre>';
+
+    
 
     /*
      *we need to modify $_POST a little bit before
@@ -189,21 +149,38 @@ class users_controller extends base_controller
     echo "This is the logout page.";
   }
 
-  public function profile($user_name = NULL)
+  public function edit_profile()
+  {
+    $this->template->title= 'Edit profile';
+    $client_files_head = Array('/css/master.css');
+
+    /* Load client files */
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+  
+     
+  }
+  
+  /*
+   * TODO what param to pass into profile?
+      email? 
+      if we don't pass anything, how do we know who
+      we're looking at?
+   */
+  public function profile($email = NULL)
   {
     /* SET UP THE VIEW */
     // note: we can say $this->template because
     // $this->template is already set up for us in
     // base_controller.
     // cool: add title on the fly!
-    $this->template->title = 'Users profile page';
+    $this->template->title = 'Profile for ... ';
     
     /* Make array of all files to go into head of document */
     $client_files_head = Array(
-      '/css/profiles.css',
       '/css/master.css'
     );
-    $client_files_body = Array('/js/sample-app.js');
+    //$client_files_body = Array('/js/sample-app.js');
     
     /* Load client files */
     $this->template->client_files_head = 
@@ -213,6 +190,9 @@ class users_controller extends base_controller
     $this->template->content = View::instance('v_users_profile');
     $this->template->content->user_name = $user_name;
     $this->template->content->color = 'linen';
+
+    $q = "select email from users where first_name = '$user_name'";
+    $this->template->content->email = $q;
     
     /* Load client files */
     $this->template->client_files_body = 
@@ -234,6 +214,49 @@ class users_controller extends base_controller
     //setcookie('chocochip', 'mmm', strtotime('+1 year'), '/');
     //setcookie('raisin', 'awesome', strtotime('+1 year'), '/');
   //}
-}
 
+  // for fun
+  public function all_globals()
+  {
+    echo '<pre>';  
+    echo '<br>$_ENV<br>';
+    print_r($_ENV);
+    echo '<br>$_SERVER<br>';
+    print_r($_SERVER);
+    echo '<br>$_GET<br>';
+    print_r($_GET);
+    echo '<br>$_POST<br>';
+    print_r($_POST);
+    echo '<br>$_FILES<br>';
+    print_r($_FILES);
+    echo '<br>$_REQUEST<br>';
+    print_r($_REQUEST);
+    echo '<br>$_SESSION<br>';
+    print_r($_SESSION);
+    echo '<br>$_COOKIE<br>';
+    print_r($_COOKIE);
+    echo '<br>$argc<br>';
+    print_r($argc);
+    echo '<br>$argv<br>';
+    print_r($argv);
+    echo '<br><br><br><br>';
+    echo '</pre>';  
+  }
+  
+  // for fun
+  public function env()
+  {
+    echo '<pre>';  
+    print_r($_ENV);
+    echo '</pre>';  
+  } 
+  
+  // for fun
+  public function global_server()
+  {
+    echo '<pre>';  
+    print_r($_SERVER);
+    echo '</pre>';  
+  } 
+} // eoc
 ?>
