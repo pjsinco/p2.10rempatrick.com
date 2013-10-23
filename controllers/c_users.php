@@ -85,7 +85,7 @@ class users_controller extends base_controller
         /********************************************************/
         $this->template->content = View::instance('v_users_signup');
         
-//        $this->template->client_files_head = 
+//        $this->template->client_files_body = 
 //            Utils::load_client_files($client_files_body);
         
         echo $this->template;

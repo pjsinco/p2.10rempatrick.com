@@ -11,9 +11,10 @@
 </head>
 
 <body>	
-
+    <div class="container_12">
 	<?php if(isset($content)) echo $content; ?>
 
 	<?php if(isset($client_files_body)) echo $client_files_body; ?>
+    </div>
 </body>
 </html>
