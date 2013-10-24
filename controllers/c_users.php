@@ -54,8 +54,6 @@ class users_controller extends base_controller
     //print_r(time());
     //echo '</pre>';
 
-    
-
     /*
      *we need to modify $_POST a little bit before
      *making the database call
