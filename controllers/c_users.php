@@ -106,6 +106,7 @@ class users_controller extends base_controller
   {
     $pw = sha1(PASSWORD_SALT . $_POST['password']);
 //    echo '<pre>'; var_dump($_POST); echo '</pre>'; // debug
+    echo Debug::dump($pw);
 
     $q = "
       SELECT token
