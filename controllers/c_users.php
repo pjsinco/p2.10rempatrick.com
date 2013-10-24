@@ -126,7 +126,11 @@ class users_controller extends base_controller
       // note: '/' says: let this cookie be accessible to
       //    every directory on my domain
       setcookie('token', $token, strtotime('+1 year'), '/');
-      echo '<pre>'; var_dump($_COOKIE); echo '</pre>'; // debug
+      //Debug::printr($_COOKIE);
+      //Debug::log("token is set? " . 
+        //isset($_COOKIE['token']) ? "yes" : "no");
+      //echo '<pre>'; var_dump($_COOKIE); echo '</pre>'; // debug
+      echo Debug::dump($_COOKIE);
 
 
       // keep simple for now
