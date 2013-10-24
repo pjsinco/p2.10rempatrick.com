@@ -146,6 +146,7 @@ class users_controller extends base_controller
   
   public function logout()
   {
+    
     echo "This is the logout page.";
   }
 
@@ -169,6 +170,10 @@ class users_controller extends base_controller
    */
   public function profile($email = NULL)
   {
+    if (!$this->user) {
+      //Router::redirect('/'); // sorry, go back to home page
+      die('Members only. <a href="/users/login">Login</a>');
+    }
     /* SET UP THE VIEW */
     // note: we can say $this->template because
     // $this->template is already set up for us in
