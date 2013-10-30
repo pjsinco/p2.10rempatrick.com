@@ -27,10 +27,10 @@ class users_controller extends base_controller
     *** Remember we need to see if the user already exists
       in the db before adding him              ***
   */
-  public function signup()
+  public function signup($name_taken = NULL, $taken_name = NULL)
   {
     /********************************************************/
-    /*          DON"T APPPEND .php          */
+    /*          DON"T APPPEND '.php' to instances           */
     /********************************************************/
     $this->template->content = View::instance('v_users_signup');
 
@@ -42,57 +42,69 @@ class users_controller extends base_controller
       Utils::load_client_files($client_files_head);
     
     
+    if (isset($name_taken)) {
+      $this->template->content->taken_name = $taken_name;
+      // pass in the email so user doesn't have to retype it
+    }
 //    $this->template->client_files_body = 
 //      Utils::load_client_files($client_files_body);
     
     echo $this->template;
   }
+
+  public function signup_1() {
+    $this->template->content = View::instance('v_users_signup1');
+  }
   
   public function p_signup()
   {
-    //echo '<pre>';
-    //print_r(time());
-    //echo '</pre>';
-
-    /*
-     *we need to modify $_POST a little bit before
-     *making the database call
-     */
+    //we need to modify $_POST a little bit before
+    //making the database call
     $_POST['created'] = Time::now();
+
     // add some salt to encryption to make it even more difficult
     // to crack
     $_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
+
     // token is like a wristband that lets user back in
     // when he comes back
     // our token is our token salt + email + a random string
     $rand_string = Utils::generate_random_string();
     $_POST['token'] = 
       sha1(TOKEN_SALT . $_POST['email'] . $rand_string);
-        //Utils::generate_random_string());
-    //echo '<pre>';
-    //print_r(TOKEN_SALT);
-    //print_r($_POST['token']);
-    //echo '<br>rand string: ';
-    //print_r($rand_string);
-    //echo '</pre>';
-
-    // encrypt the password 
-    //echo '<pre>';
-    //print_r($_POST['password']);
-    //print_r($_POST);
-    //echo '</pre>';
     
-    DB::instance(DB_NAME)->insert_row('users', $_POST);
+    // make sure user_name isn't already taken
+    $q = "
+      SELECT user_name
+      FROM users
+      WHERE user_name = '" . $_POST['user_name'] . "'";
+    $result = DB::instance(DB_NAME)->select_field($q);
+    //echo '<pre>'; var_dump($result); echo '</pre>'; // debug
 
-    /* redirect user to login page */
-    //NOTE: DON'T ECHO ANYTHING BEFORE CALLING REDIRECT
-    Router::redirect('/users/login');
+    if ($result == NULL) {
+      DB::instance(DB_NAME)->insert_row('users', $_POST);
+      /* redirect user to login page */
+      //NOTE: DON'T ECHO ANYTHING BEFORE CALLING REDIRECT
+      Router::redirect('/users/login/new_user');
+    } else {
+      // hold onto email address so we can use it as form default val
+      $_SESSION['email'] = $_POST['email'];
+      Router::redirect('/users/signup/name_taken/' .
+        $_POST['user_name']);
+    }
+
   }
   
-  public function login()
+  public function login($new_user = NULL)
   {
     $this->template->title = 'Log-in page';
+    $client_files_head = array('/css/main.css');
+    $this->template->client_files_head =
+      Utils::load_client_files($client_files_head);
     $this->template->content = View::instance('v_users_login');
+    if ($new_user) {
+      $this->template->content->new_user = true;
+    }
     echo $this->template;
   }
 
@@ -103,8 +115,6 @@ class users_controller extends base_controller
   public function p_login()
   {
     $pw = sha1(PASSWORD_SALT . $_POST['password']);
-//    echo '<pre>'; var_dump($_POST); echo '</pre>'; // debug
-    echo Debug::dump($pw);
 
     $q = "
       SELECT token
@@ -113,7 +123,6 @@ class users_controller extends base_controller
         AND email = '" . $_POST['email'] . "'";
 
     $token = DB::instance(DB_NAME)->select_field($q);
-    //echo '<pre>'; var_dump($token); echo '</pre>'; // debug
   
     // Success
     if ($token) {
@@ -129,11 +138,12 @@ class users_controller extends base_controller
       //Debug::log("token is set? " . 
         //isset($_COOKIE['token']) ? "yes" : "no");
       //echo '<pre>'; var_dump($_COOKIE); echo '</pre>'; // debug
-      echo Debug::dump($_COOKIE);
+      //echo Debug::dump($_COOKIE);
 
 
       // keep simple for now
-      echo "You are logged in";
+      //echo "You are logged in";
+      Router::redirect('/users/edit_profile');
       
     // Fail
     } else {
@@ -162,7 +172,14 @@ class users_controller extends base_controller
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
   
-     
+    $this->template->content = View::instance('v_users_edit_profile');
+    //Render the view
+    echo $this->template;
+  }
+
+  public function p_edit_profile() 
+  {
+
   }
   
   /*
@@ -259,6 +276,27 @@ class users_controller extends base_controller
     echo '</pre>';  
   } 
   
+  public function form_prac() {
+    $this->template->content = View::instance('v_users_form_prac');
+    $this->template->title = 'Form practice';
+    
+    $client_files_head = Array(
+      '/css/main.css'
+    );
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+
+    // make a form
+    $form = new Form($_POST);
+    $form->open('form', '/users/p_form_prac');
+    
+  }
+
+  public function p_form_prac() {
+
+  }
+
+
   // for fun
   public function global_server()
   {

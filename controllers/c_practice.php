@@ -72,7 +72,24 @@ class practice_controller extends base_controller
       echo $this->template;
     }
 
+  public function test4() 
+  {
+    $this->template->content = View::instance('v_practice_test4');
+    $this->template->title = 'Tell us your nickname';
 
-}
+    $client_files_head = array('/css/main.css');
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+
+    echo $this->template;
+    
+  }  
+
+  public function p_test4()
+  {
+    
+  }
+
+} // eoc
 
 ?>
