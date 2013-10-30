@@ -52,10 +52,6 @@ class users_controller extends base_controller
     echo $this->template;
   }
 
-  public function signup_1() {
-    $this->template->content = View::instance('v_users_signup1');
-  }
-  
   public function p_signup()
   {
     //we need to modify $_POST a little bit before
@@ -287,8 +283,11 @@ class users_controller extends base_controller
       Utils::load_client_files($client_files_head);
 
     // make a form
-    $form = new Form($_POST);
-    $form->open('form', '/users/p_form_prac');
+    $form = new Form();
+
+    $this->content->form = $form->open('form', '/users/p_form_prac');
+
+    echo $this->template;
     
   }
 

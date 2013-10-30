@@ -10,6 +10,21 @@ insert into users
     first_name = 'Jill',
     last_name = 'Smith'
 
+/*****INCOMPLETE*****/
+create table users (
+  user_id INT AUTO_INCREMENT PRIMARY KEY,
+  created INT,
+  modified INT,
+  token VARCHAR(64),
+  password VARCHAR(64),
+  last_login INT,
+  timezone VARCHAR(64),
+  user_name VARCHAR(32),
+  email VARCHAR(128),
+  location VARCHAR(128),
+  bio text
+) engine InnoDB 
+
 create table users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   created INT,
