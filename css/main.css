@@ -389,6 +389,10 @@ body {
   margin-bottom: 10px;
 }
 
+.error {
+  color: red;
+}
+
 .spacer {
   height: 1em;
 }

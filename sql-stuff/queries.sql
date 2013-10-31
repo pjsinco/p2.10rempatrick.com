@@ -2,7 +2,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 create table users (
-  user_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT AUTO_INCREMENT UNIQUE PRIMARY KEY,
   created INT,
   modified INT,
   token VARCHAR(64),

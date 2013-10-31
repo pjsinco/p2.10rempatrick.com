@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.5.29, for osx10.6 (i386)
+-- MySQL dump 10.13  Distrib 5.5.33, for osx10.6 (i386)
 --
 -- Host: localhost    Database: rempatri_p2_10rempatrick_com
 -- ------------------------------------------------------
--- Server version	5.5.29
+-- Server version	5.5.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -62,7 +62,8 @@ CREATE TABLE `users` (
   `email` varchar(128) DEFAULT NULL,
   `location` varchar(128) DEFAULT NULL,
   `bio` text,
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -72,7 +73,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,1383086278,NULL,'e78de0dcd23fe7ab0cca9ea3c002e7523fd5e1e0','ef2ec8738e24daca58e82d55b68bde6bcb9e1cc9',NULL,NULL,'jcapulet','jcapulet@veronahs.edu',NULL,NULL),(2,1383086776,NULL,'61cdfec25dd9bbb9a2e3b235df4a20c4c9aaefcb','500339f8fd3aaa369e30594e9e05f146e827cd7c',NULL,NULL,'benvolio','bvolio@veronahs.edu',NULL,NULL),(3,1383087041,NULL,'b0ac297d9e72e1ae0c3f54d17d0912abfb6924a7','500339f8fd3aaa369e30594e9e05f146e827cd7c',NULL,NULL,'benvolio','bvolio@veronahs.edu',NULL,NULL),(4,1383087465,NULL,'a92941c5cd4f6d15827de14c22c207c1482e7bf2','500339f8fd3aaa369e30594e9e05f146e827cd7c',NULL,NULL,'benvolio','bvolio@veronahs.edu',NULL,NULL),(5,1383087536,NULL,'b36f14fe2793b27b46ce5fb8f197241dd7e02a59','670102259fb523edad0bf985c116d0372cd04649',NULL,NULL,'ajax','ajax@tigers.com',NULL,NULL),(7,1383088206,NULL,'b1bbcc6cb2b5f0446ce94222b86a4b550964c386','0067e352ed2ff222173ef458c52b3d7ef3a4bb53',NULL,NULL,'omarinfante','oinfante@tigers.com',NULL,NULL);
+INSERT INTO `users` VALUES (1,1383086278,NULL,'e78de0dcd23fe7ab0cca9ea3c002e7523fd5e1e0','ef2ec8738e24daca58e82d55b68bde6bcb9e1cc9',NULL,NULL,'jcapulet','jcapulet@veronahs.edu',NULL,NULL),(2,1383086776,NULL,'61cdfec25dd9bbb9a2e3b235df4a20c4c9aaefcb','500339f8fd3aaa369e30594e9e05f146e827cd7c',NULL,NULL,'benvolio','bvolio@veronahs.edu',NULL,NULL),(5,1383087536,NULL,'b36f14fe2793b27b46ce5fb8f197241dd7e02a59','670102259fb523edad0bf985c116d0372cd04649',NULL,NULL,'ajax','ajax@tigers.com',NULL,NULL),(7,1383088206,NULL,'b1bbcc6cb2b5f0446ce94222b86a4b550964c386','0067e352ed2ff222173ef458c52b3d7ef3a4bb53',NULL,NULL,'omarinfante','oinfante@tigers.com',NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -111,4 +112,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-10-30 14:41:31
+-- Dump completed on 2013-10-30 14:58:45

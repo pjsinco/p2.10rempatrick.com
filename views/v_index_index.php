@@ -12,7 +12,7 @@
   <div class='sign-in'>
     <h2>Log in</h2>
     <form action='/users/p_login' method='post'>
-        Email <input type='text' name='email'><br>
+        User name <input type='text' name='user_name'><br>
         Password <input type='password' name='password'><br>
         <input type='submit' value='Log in'>
     </form>

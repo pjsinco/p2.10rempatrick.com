@@ -5,7 +5,7 @@
 <div class='prefix_2 grid_8 suffix_2'>
   <div class='sign-in'>
     <?php // TODO what var to check in isset? ?>
-    <?php if (isset($email)): ?>
+    <?php if (isset($user_name)): ?>
     <h1><?=$first_name?></h1>
     <h1><?=$last_name?></h1>
     <h1><?=$email?></h1>

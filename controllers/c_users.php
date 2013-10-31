@@ -27,7 +27,7 @@ class users_controller extends base_controller
     *** Remember we need to see if the user already exists
       in the db before adding him              ***
   */
-  public function signup($name_taken = NULL, $taken_name = NULL)
+  public function signup($error = NULL, $taken = NULL)
   {
     /********************************************************/
     /*          DON"T APPPEND '.php' to instances           */
@@ -42,9 +42,11 @@ class users_controller extends base_controller
       Utils::load_client_files($client_files_head);
     
     
-    if (isset($name_taken)) {
-      $this->template->content->taken_name = $taken_name;
-      // pass in the email so user doesn't have to retype it
+    //echo '<pre>c signup'; var_dump($error); echo '</pre>';
+    //echo '<pre>c signup'; var_dump($taken); echo '</pre>';
+    if (isset($error)) {
+      $this->template->content->taken = $taken;
+       //pass in the email so user doesn't have to retype it
     }
 //    $this->template->client_files_body = 
 //      Utils::load_client_files($client_files_body);
@@ -74,33 +76,53 @@ class users_controller extends base_controller
       SELECT user_name
       FROM users
       WHERE user_name = '" . $_POST['user_name'] . "'";
-    $result = DB::instance(DB_NAME)->select_field($q);
+    $username_taken = DB::instance(DB_NAME)->select_field($q);
     //echo '<pre>'; var_dump($result); echo '</pre>'; // debug
 
-    if ($result == NULL) {
+    // make sure email isn't already taken
+    $q = "
+      SELECT email
+      FROM users
+      WHERE email = '" . $_POST['email'] . "'";
+    $email_taken = DB::instance(DB_NAME)->select_field($q);
+    //echo '<pre>'; var_dump($result); echo '</pre>'; // debug
+
+    if ($username_taken != NULL) {
+      // hold onto to email to prefill form
+      $_SESSION['email'] = $_POST['email'];
+      Router::redirect('/users/signup/error/name/');
+    } else if ($email_taken != NULL) {
+      // hold onto to username to prefill form
+      $_SESSION['user_name'] = $_POST['user_name'];
+      Router::redirect('/users/signup/error/email/');
+    } else { // username, email check out OK
       DB::instance(DB_NAME)->insert_row('users', $_POST);
       /* redirect user to login page */
       //NOTE: DON'T ECHO ANYTHING BEFORE CALLING REDIRECT
       Router::redirect('/users/login/new_user');
-    } else {
-      // hold onto email address so we can use it as form default val
-      $_SESSION['email'] = $_POST['email'];
-      Router::redirect('/users/signup/name_taken/' .
-        $_POST['user_name']);
-    }
+    } 
 
   }
   
-  public function login($new_user = NULL)
+  public function login($error = NULL)
   {
-    $this->template->title = 'Log-in page';
+    // set up the head
+    $this->template->title = 'Log in to ArgyBargy';
     $client_files_head = array('/css/main.css');
     $this->template->client_files_head =
       Utils::load_client_files($client_files_head);
+
+    echo Debug::dump($error);
+
+    // set up the view
     $this->template->content = View::instance('v_users_login');
-    if ($new_user) {
-      $this->template->content->new_user = true;
+
+    // if we have a login fail, pass that info to view
+    if ($error) {
+      //echo '<pre>'; var_dump($error); echo '</pre>';
+      $this->template->content->error = $error;
     }
+
     echo $this->template;
   }
 
@@ -110,17 +132,22 @@ class users_controller extends base_controller
    */
   public function p_login()
   {
-    $pw = sha1(PASSWORD_SALT . $_POST['password']);
+    // sanitize user-entered data
+    $_POST = DB::instance(DB_NAME)->sanitize($_POST);
 
+    // salt the password
+    $_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
+
+    // get the user's token if we have it
     $q = "
       SELECT token
       FROM users
       WHERE password = '$pw'
-        AND email = '" . $_POST['email'] . "'";
+        AND user_name = '" . $_POST['user_name'] . "'";
 
     $token = DB::instance(DB_NAME)->select_field($q);
   
-    // Success
+    // success
     if ($token) {
       // send to home page? send to dashboard?
       // say congrats and show a menu of where to go?
@@ -130,24 +157,14 @@ class users_controller extends base_controller
       // note: '/' says: let this cookie be accessible to
       //    every directory on my domain
       setcookie('token', $token, strtotime('+1 year'), '/');
-      //Debug::printr($_COOKIE);
-      //Debug::log("token is set? " . 
-        //isset($_COOKIE['token']) ? "yes" : "no");
-      //echo '<pre>'; var_dump($_COOKIE); echo '</pre>'; // debug
-      //echo Debug::dump($_COOKIE);
-
-
-      // keep simple for now
-      //echo "You are logged in";
       Router::redirect('/users/edit_profile');
       
-    // Fail
+    // failure
     } else {
       // display fail message with 'back' button to try again?
       // or send back ourselves with some error messages?
 
-      // keep simple
-      echo "Login failed";
+      Router::redirect('/users/login/error/');
     }
 
 
@@ -155,8 +172,15 @@ class users_controller extends base_controller
   
   public function logout()
   {
+    $this->template->title = 'Log out of ArgyBargy';
+    $client_files_head = Array('/css/main.css');
+
+    /* Load client files */
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+  
+    echo $this->template;
     
-    echo "This is the logout page.";
   }
 
   public function edit_profile()
@@ -184,7 +208,7 @@ class users_controller extends base_controller
       if we don't pass anything, how do we know who
       we're looking at?
    */
-  public function profile($email = NULL)
+  public function profile($user_name = NULL)
   {
     if (!$this->user) {
       //Router::redirect('/'); // sorry, go back to home page
@@ -210,10 +234,10 @@ class users_controller extends base_controller
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
     $this->template->content->user_name = $user_name;
-    $this->template->content->color = 'linen';
+    //$this->template->content->color = 'linen';
 
-    $q = "select email from users where first_name = '$user_name'";
-    $this->template->content->email = $q;
+    //$q = "select user_name from users where first_name = '$user_name'";
+    //$this->template->content->email = $q;
     
     /* Load client files */
     $this->template->client_files_body = 
