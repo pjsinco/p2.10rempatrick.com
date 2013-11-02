@@ -9,6 +9,8 @@ class users_controller extends base_controller
     parent::__construct();
   } 
   
+
+  
   
   public function index() 
   {
@@ -42,65 +44,75 @@ class users_controller extends base_controller
       Utils::load_client_files($client_files_head);
     
     
-    //echo '<pre>c signup'; var_dump($error); echo '</pre>';
-    //echo '<pre>c signup'; var_dump($taken); echo '</pre>';
-    if (isset($error)) {
-      $this->template->content->taken = $taken;
-       //pass in the email so user doesn't have to retype it
-    }
-//    $this->template->client_files_body = 
-//      Utils::load_client_files($client_files_body);
-    
+//    if (isset($error)) {
+//      $this->template->content->taken = $taken;
+//       //pass in the email so user doesn't have to retype it
+//    }
+//    
     echo $this->template;
   }
 
   public function p_signup()
   {
+    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
+
+    //}
+
+    $result = $this->userObj->signup($_POST);
+
+    // success
+    if ($result) {
+      /* redirect user to login page */
+      Router::redirect('/users/login/new_user');
+      //echo '<pre>'; echo 'signup successful'; echo '</pre>'; // debug
+    }
+      
+//    $token = $this->userObj->generate_token($_POST['email']);
     //we need to modify $_POST a little bit before
     //making the database call
-    $_POST['created'] = Time::now();
+    //$_POST['created'] = Time::now();
 
     // add some salt to encryption to make it even more difficult
     // to crack
-    $_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
+    //$_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
 
     // token is like a wristband that lets user back in
     // when he comes back
     // our token is our token salt + email + a random string
-    $rand_string = Utils::generate_random_string();
-    $_POST['token'] = 
-      sha1(TOKEN_SALT . $_POST['email'] . $rand_string);
+    //$rand_string = Utils::generate_random_string();
+    //$_POST['token'] = 
+      //sha1(TOKEN_SALT . $_POST['email'] . $rand_string);
     
     // make sure user_name isn't already taken
-    $q = "
-      SELECT user_name
-      FROM users
-      WHERE user_name = '" . $_POST['user_name'] . "'";
-    $username_taken = DB::instance(DB_NAME)->select_field($q);
+    //$q = "
+      //SELECT user_name
+      //FROM users
+      //WHERE user_name = '" . $_POST['user_name'] . "'";
+    //$username_taken = DB::instance(DB_NAME)->select_field($q);
     //echo '<pre>'; var_dump($result); echo '</pre>'; // debug
 
     // make sure email isn't already taken
-    $q = "
-      SELECT email
-      FROM users
-      WHERE email = '" . $_POST['email'] . "'";
-    $email_taken = DB::instance(DB_NAME)->select_field($q);
+    //$q = "
+      //SELECT email
+      //FROM users
+      //WHERE email = '" . $_POST['email'] . "'";
+    //$email_taken = DB::instance(DB_NAME)->select_field($q);
     //echo '<pre>'; var_dump($result); echo '</pre>'; // debug
 
-    if ($username_taken != NULL) {
-      // hold onto to email to prefill form
-      $_SESSION['email'] = $_POST['email'];
-      Router::redirect('/users/signup/error/name/');
-    } else if ($email_taken != NULL) {
-      // hold onto to username to prefill form
-      $_SESSION['user_name'] = $_POST['user_name'];
-      Router::redirect('/users/signup/error/email/');
-    } else { // username, email check out OK
-      DB::instance(DB_NAME)->insert_row('users', $_POST);
+    //if ($username_taken != NULL) {
+       //hold onto to email to prefill form
+      //$_SESSION['email'] = $_POST['email'];
+      //Router::redirect('/users/signup/error/name/');
+    //} else if ($email_taken != NULL) {
+//       hold onto to username to prefill form
+      //$_SESSION['user_name'] = $_POST['user_name'];
+      //Router::redirect('/users/signup/error/email/');
+    //} else { // username, email check out OK
+      //DB::instance(DB_NAME)->insert_row('users', $_POST);
       /* redirect user to login page */
       //NOTE: DON'T ECHO ANYTHING BEFORE CALLING REDIRECT
-      Router::redirect('/users/login/new_user');
-    } 
+      //Router::redirect('/users/login/new_user');
+    //} 
 
   }
   
@@ -127,28 +139,32 @@ class users_controller extends base_controller
   }
 
   /*
-   *We just need to check the token when verifying whether 
-   *a user can log in
+   *some code from @449
    */
   public function p_login()
   {
+    $email = $_POST['email'];
+    $token = $this->userObj->login($email, $_POST['password']);
+
+    $this->userObj->login_redirect($token, $email, '/users/index/');
+
     // sanitize user-entered data
-    $_POST = DB::instance(DB_NAME)->sanitize($_POST);
+    //$_POST = DB::instance(DB_NAME)->sanitize($_POST);
 
     // salt the password
-    $_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
+    //$_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
 
     // get the user's token if we have it
-    $q = "
-      SELECT token
-      FROM users
-      WHERE password = '$pw'
-        AND user_name = '" . $_POST['user_name'] . "'";
+    //$q = "
+      //SELECT token
+      //FROM users
+      //WHERE password = '$pw'
+        //AND user_name = '" . $_POST['user_name'] . "'";
 
-    $token = DB::instance(DB_NAME)->select_field($q);
+    //$token = DB::instance(DB_NAME)->select_field($q);
   
     // success
-    if ($token) {
+    //if ($token) {
       // send to home page? send to dashboard?
       // say congrats and show a menu of where to go?
       
@@ -156,16 +172,16 @@ class users_controller extends base_controller
       // we don't have to go thru this process again
       // note: '/' says: let this cookie be accessible to
       //    every directory on my domain
-      setcookie('token', $token, strtotime('+1 year'), '/');
-      Router::redirect('/users/edit_profile');
+      //setcookie('token', $token, strtotime('+1 year'), '/');
+      //Router::redirect('/users/edit_profile');
       
     // failure
-    } else {
+    //} else {
       // display fail message with 'back' button to try again?
       // or send back ourselves with some error messages?
 
-      Router::redirect('/users/login/error/');
-    }
+      //Router::redirect('/users/login/error/');
+    //}
 
 
   }
