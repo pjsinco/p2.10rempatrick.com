@@ -142,8 +142,8 @@ class users_controller extends base_controller
     $q = "
       SELECT token
       FROM users
-      WHERE password = '$pw'
-        AND user_name = '" . $_POST['user_name'] . "'";
+      WHERE password = '" . $_POST['password'] . 
+        "' AND user_name = '" . $_POST['user_name'] . "'";
 
     $token = DB::instance(DB_NAME)->select_field($q);
   
