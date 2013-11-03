@@ -14,16 +14,6 @@ class users_controller extends base_controller
     echo "This is the index page.";
   }
 
-  /* 
-    This method processes the signup form
-
-    What do we want to display on the page?
-    - show a confirmation?
-    - redirect to login page?
-    - redirect to home page?
-      - to use a redirect, the Router class will help
-      - ex.: Router::redirect('/users/login');
-  */
   public function signup($error = null)
   {
     /********************************************************/
@@ -117,7 +107,6 @@ class users_controller extends base_controller
   }
 
   /*
-   *some code from @449
    *some code from http://screencast.com/t/U6NXOC3rH
    */
   public function p_login()
@@ -207,17 +196,12 @@ class users_controller extends base_controller
     //$this->template->content->email = $q;
     
     /* Load client files */
-    $this->template->client_files_body = 
-      Utils::load_client_files($client_files_body);
+    //$this->template->client_files_body = 
+      //Utils::load_client_files($client_files_body);
     
     /* DISPLAY */
     echo $this->template;
     
-      if ($user_name == NULL) {
-        echo "No user specified";
-      } else {
-        echo "This is the profile for " . $user_name;
-      }
   }
   
   //public function cookie_monster()
