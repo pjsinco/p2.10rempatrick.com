@@ -9,9 +9,6 @@ class users_controller extends base_controller
     parent::__construct();
   } 
   
-
-  
-  
   public function index() 
   {
     echo "This is the index page.";
@@ -26,45 +23,45 @@ class users_controller extends base_controller
     - redirect to home page?
       - to use a redirect, the Router class will help
       - ex.: Router::redirect('/users/login');
-    *** Remember we need to see if the user already exists
-      in the db before adding him              ***
   */
   public function signup($error = null)
   {
     /********************************************************/
-    /*          DON"T APPPEND '.php' to instances           */
+    /*     DON"T APPPEND '.php' to View instances           */
     /********************************************************/
 
     // set up the head
-    $this->template->content = View::instance('v_users_signup');
     $this->template->title = 'Sign up for ArgyBargy';
-    $client_files_head = Array(
-      '/css/main.css'
-    );
+    $client_files_head = Array('/css/main.css');
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
+
+    // set up the body
+    $this->template->content = View::instance('v_users_signup');
     
-    // pass error to view
+    // pass error to view, if one exists
     $this->template->content->error = $error; 
+
     // render template
     echo $this->template;
   }
 
   public function p_signup()
   {
-    // error possibilities:
-        //blank fields
-        //user name taken
-        //email taken
+    // 4 error possibilities:
+        //1. blank fields
+        //2. user name taken
+        //3. email taken
+        //4. some other error 
 
-    // if any fields are blank, send error message
+    // 1. if any fields are blank, send error message
     foreach ($_POST as $field => $value) {
       if(empty($value)) {
         Router::redirect('/users/signup/blank-fields');
       }
     }
 
-    // if user_name is taken, send error message
+    // 2. if user_name is taken, send error message
     $q = "
       SELECT user_name
       FROM users
@@ -79,7 +76,7 @@ class users_controller extends base_controller
     //confirm_unique_email, but I don't know how to handle
     //the query string it appends to the url
 
-    // check to make sure email doesn't already exist
+    // 3. if email is taken, send error message
     if (!$this->userObj->confirm_unique_email($_POST['email'])) {
       Router::redirect('/users/signup/email-exists');
     }
@@ -88,34 +85,34 @@ class users_controller extends base_controller
 
     // success
     if ($result) {
-      /* redirect user to login page */
-      Router::redirect('/users/login/new_user');
-    // not sure under what conditions this else branch will be used
+      //redirect user to login page
+      Router::redirect('/users/login/new-user/' . $_POST['user_name']);
+      // 4. if some other error occurs, send general error message
     } else {
       Router::redirect('/users/signup/error');
     }
   }
   
-  public function login($error = null)
+  public function login($flag = null, $user_name = null)
   {
+    /********************************************************/
+    /*     DON"T APPPEND '.php' to View instances           */
+    /********************************************************/
+
     // set up the head
     $this->template->title = 'Log in to ArgyBargy';
     $client_files_head = array('/css/main.css');
     $this->template->client_files_head =
       Utils::load_client_files($client_files_head);
 
-    echo Debug::dump($_GET);
-    echo Debug::printr($_GET);
-
-    // set up the view
+    // set up the body
     $this->template->content = View::instance('v_users_login');
 
-    // if we have a login fail, pass that info to view
-    if ($error) {
-      //echo '<pre>'; var_dump($error); echo '</pre>';
-      $this->template->content->error = $error;
-    }
+    // pass flag to view
+    $this->template->content->flag = $flag;
+    $this->template->content->user_name = $user_name;
 
+    // render template
     echo $this->template;
   }
 
@@ -125,7 +122,11 @@ class users_controller extends base_controller
    */
   public function p_login()
   {
-    // check for blank fields
+    // error possibilities
+        //1. blank fields
+        //2. user doesn't exist
+
+    // 1. if any fields are blank, send error message
     foreach ($_POST as $field => $value) {
       if (empty($value)) {
         Router::redirect('/users/login/blank-fields');
@@ -136,8 +137,9 @@ class users_controller extends base_controller
     $token = $this->userObj->login($email, $_POST['password']);
     if ($token) {
       $this->userObj->login_redirect($token, $email, '/users/index/');
+    // 2. if user doesn't exists, send error message
     } else {
-      Router::redirect('/users/login/error');
+      Router::redirect('/users/login/no-user');
     }
 
   }

@@ -4,15 +4,15 @@
 <div class='prefix_2 grid_8 suffix_2'>
   <div class='sign-up'>
   
-    <?php // echo '<pre>'; var_dump($_SESSION); echo '</pre>'; // debug ?>
-
 <!--   process any error messages -->
   <?php if (isset($error) && $error == 'email-exists'): ?>
     <div class='error'>I'm sorry, that email is already taken. Please choose another.</div>
   <?php elseif (isset($error) && $error == 'blank-fields'): ?>
-    <div class='error'>Signup failed. All fields are required.</div>
+    <div class='error'>Sign-up failed. All fields are required.</div>
   <?php elseif (isset($error) && $error == 'username-exists'): ?>
     <div class='error'>I'm sorry, that user name is already taken. Please choose another.</div>
+  <?php elseif (isset($error) && $error == 'error'): ?>
+    <div class='error'>Sign-up failed. Please try again.</div>
   <?php endif; ?>
     <h2>Sign up for ArgyBargy</h2>
     <form action='/users/p_signup' method='post'>
