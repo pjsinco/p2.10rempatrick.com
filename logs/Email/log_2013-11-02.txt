@@ -1,0 +1,34 @@
+2013-11-02 18:22:19 - INFO --> -------------------------- 
+2013-11-02 18:22:19 - INFO --> Controller/Method: users/p_signup 
+2013-11-02 18:22:19 - INFO --> OUTGOING EMAILS ARE DISABLED. THIS EMAIL WAS NOT SENT TO THE RECIPIENTS, ONLY psinco+argybargy@gmail.com 
+2013-11-02 18:22:19 - INFO --> From: ArgyBargy (psinco@gmail.com) 
+2013-11-02 18:22:19 - INFO --> To: ArgyBargy (psinco+argybargy@gmail.com),  
+2013-11-02 18:22:19 - INFO --> CC:  
+2013-11-02 18:22:19 - INFO --> BCC:  
+2013-11-02 18:22:19 - INFO --> Subject: ArgyBargy Geolocation exceeded time limit for IP 76.109.14.196 
+2013-11-02 18:22:19 - INFO --> Body: <h2>Routed Controller/Method:</h2> users/p_signup<br/><h2>Cookies</h2><pre>Array
+(
+    [oatmeal] => yummy
+    [chocochip] => mmm
+    [raisin] => awesome
+    [vanilla] => yeah
+    [PHPSESSID] => 5ba408e43fe4edfa117ff62e4535d837
+    [SQLiteManager_currentLangue] => 2
+    [token] => 4e7eda01541780db46f 
+2013-11-02 18:36:44 - INFO --> -------------------------- 
+2013-11-02 18:36:44 - INFO --> Controller/Method: users/p_signup 
+2013-11-02 18:36:44 - INFO --> OUTGOING EMAILS ARE DISABLED. THIS EMAIL WAS NOT SENT TO THE RECIPIENTS, ONLY psinco+argybargy@gmail.com 
+2013-11-02 18:36:44 - INFO --> From: ArgyBargy (psinco@gmail.com) 
+2013-11-02 18:36:44 - INFO --> To: ArgyBargy (psinco+argybargy@gmail.com),  
+2013-11-02 18:36:44 - INFO --> CC:  
+2013-11-02 18:36:44 - INFO --> BCC:  
+2013-11-02 18:36:44 - INFO --> Subject: ArgyBargy Geolocation exceeded time limit for IP 76.109.14.196 
+2013-11-02 18:36:44 - INFO --> Body: <h2>Routed Controller/Method:</h2> users/p_signup<br/><h2>Cookies</h2><pre>Array
+(
+    [oatmeal] => yummy
+    [chocochip] => mmm
+    [raisin] => awesome
+    [vanilla] => yeah
+    [PHPSESSID] => 5ba408e43fe4edfa117ff62e4535d837
+    [SQLiteManager_currentLangue] => 2
+    [token] => 4e7eda01541780db46f 

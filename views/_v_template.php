@@ -16,12 +16,10 @@
     <div class='container_12'>
     <div class='grid_8 prefix_4' id='menu'>
     <a href="/" title='Welcome to ArgyBargy'><img src='/images/argybargy-blue150.gif' alt='ArgyBargy logo'></a>
-    <?php // echo '<pre>'; var_dump($user); echo '</pre>'; ?>
-    <?php echo Debug::info($user); ?>
 <!--       menu for logged-in users -->
       <?php if($user): ?>
         <a href='/users/logout'>Logout</a>
-        <a href='/users/profile'>Profile</a>
+        <a href='/users/profile/<?php echo $user->user_name; ?>'>Profile</a>
 <!--       menu for non-logged-in users -->
       <?php else: ?>
         <a href='/users/signup'>Sign up</a>
