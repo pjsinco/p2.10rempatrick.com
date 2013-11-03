@@ -6,11 +6,11 @@
 
 <h2>Please log in</h2>
 <form action='/users/p_login' method='post'>
-  User name <input type='text' name='user_name'><br>
+  Email <input type='text' name='email'><br>
   Password <input type='password' name='password'><br>
   <?php if(isset($error) && $error == 'error'): ?>
   <div class='error'>
-    Log-in failed. Please double-check your user name and password.
+    Log-in failed. Please double-check your email and password.
   </div>
   <br>
   <?php endif; ?>

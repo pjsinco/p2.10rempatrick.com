@@ -29,13 +29,14 @@ class users_controller extends base_controller
     *** Remember we need to see if the user already exists
       in the db before adding him              ***
   */
-  public function signup($error = NULL, $taken = NULL)
+  public function signup($error = null)
   {
     /********************************************************/
     /*          DON"T APPPEND '.php' to instances           */
     /********************************************************/
-    $this->template->content = View::instance('v_users_signup');
 
+    // set up the head
+    $this->template->content = View::instance('v_users_signup');
     $this->template->title = 'Sign up for ArgyBargy';
     $client_files_head = Array(
       '/css/main.css'
@@ -43,20 +44,45 @@ class users_controller extends base_controller
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
     
-    
-//    if (isset($error)) {
-//      $this->template->content->taken = $taken;
-//       //pass in the email so user doesn't have to retype it
-//    }
-//    
+    // pass error to view
+    $this->template->content->error = $error; 
+    // render template
     echo $this->template;
   }
 
   public function p_signup()
   {
-    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
+    // error possibilities:
+        //blank fields
+        //user name taken
+        //email taken
 
-    //}
+    // if any fields are blank, send error message
+    foreach ($_POST as $field => $value) {
+      if(empty($value)) {
+        Router::redirect('/users/signup/blank-fields');
+      }
+    }
+
+    // if user_name is taken, send error message
+    $q = "
+      SELECT user_name
+      FROM users
+      WHERE user_name = '" . $_POST['user_name'] . "'
+    ";
+    $result = DB::instance(DB_NAME)->select_field($q);
+    if ($result) {
+      Router::redirect('/users/signup/username-exists');
+    }
+
+    //I know the User class's signup() method calls
+    //confirm_unique_email, but I don't know how to handle
+    //the query string it appends to the url
+
+    // check to make sure email doesn't already exist
+    if (!$this->userObj->confirm_unique_email($_POST['email'])) {
+      Router::redirect('/users/signup/email-exists');
+    }
 
     $result = $this->userObj->signup($_POST);
 
@@ -64,59 +90,13 @@ class users_controller extends base_controller
     if ($result) {
       /* redirect user to login page */
       Router::redirect('/users/login/new_user');
-      //echo '<pre>'; echo 'signup successful'; echo '</pre>'; // debug
+    // not sure under what conditions this else branch will be used
+    } else {
+      Router::redirect('/users/signup/error');
     }
-      
-//    $token = $this->userObj->generate_token($_POST['email']);
-    //we need to modify $_POST a little bit before
-    //making the database call
-    //$_POST['created'] = Time::now();
-
-    // add some salt to encryption to make it even more difficult
-    // to crack
-    //$_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
-
-    // token is like a wristband that lets user back in
-    // when he comes back
-    // our token is our token salt + email + a random string
-    //$rand_string = Utils::generate_random_string();
-    //$_POST['token'] = 
-      //sha1(TOKEN_SALT . $_POST['email'] . $rand_string);
-    
-    // make sure user_name isn't already taken
-    //$q = "
-      //SELECT user_name
-      //FROM users
-      //WHERE user_name = '" . $_POST['user_name'] . "'";
-    //$username_taken = DB::instance(DB_NAME)->select_field($q);
-    //echo '<pre>'; var_dump($result); echo '</pre>'; // debug
-
-    // make sure email isn't already taken
-    //$q = "
-      //SELECT email
-      //FROM users
-      //WHERE email = '" . $_POST['email'] . "'";
-    //$email_taken = DB::instance(DB_NAME)->select_field($q);
-    //echo '<pre>'; var_dump($result); echo '</pre>'; // debug
-
-    //if ($username_taken != NULL) {
-       //hold onto to email to prefill form
-      //$_SESSION['email'] = $_POST['email'];
-      //Router::redirect('/users/signup/error/name/');
-    //} else if ($email_taken != NULL) {
-//       hold onto to username to prefill form
-      //$_SESSION['user_name'] = $_POST['user_name'];
-      //Router::redirect('/users/signup/error/email/');
-    //} else { // username, email check out OK
-      //DB::instance(DB_NAME)->insert_row('users', $_POST);
-      /* redirect user to login page */
-      //NOTE: DON'T ECHO ANYTHING BEFORE CALLING REDIRECT
-      //Router::redirect('/users/login/new_user');
-    //} 
-
   }
   
-  public function login($error = NULL)
+  public function login($error = null)
   {
     // set up the head
     $this->template->title = 'Log in to ArgyBargy';
@@ -124,7 +104,8 @@ class users_controller extends base_controller
     $this->template->client_files_head =
       Utils::load_client_files($client_files_head);
 
-    echo Debug::dump($error);
+    echo Debug::dump($_GET);
+    echo Debug::printr($_GET);
 
     // set up the view
     $this->template->content = View::instance('v_users_login');
@@ -140,63 +121,31 @@ class users_controller extends base_controller
 
   /*
    *some code from @449
+   *some code from http://screencast.com/t/U6NXOC3rH
    */
   public function p_login()
   {
+    // check for blank fields
+    foreach ($_POST as $field => $value) {
+      if (empty($value)) {
+        Router::redirect('/users/login/blank-fields');
+      }
+    }
+
     $email = $_POST['email'];
     $token = $this->userObj->login($email, $_POST['password']);
-
-    $this->userObj->login_redirect($token, $email, '/users/index/');
-
-    // sanitize user-entered data
-    //$_POST = DB::instance(DB_NAME)->sanitize($_POST);
-
-    // salt the password
-    //$_POST['password'] = sha1(PASSWORD_SALT . $_POST['password']);
-
-    // get the user's token if we have it
-    //$q = "
-      //SELECT token
-      //FROM users
-      //WHERE password = '$pw'
-        //AND user_name = '" . $_POST['user_name'] . "'";
-
-    //$token = DB::instance(DB_NAME)->select_field($q);
-  
-    // success
-    //if ($token) {
-      // send to home page? send to dashboard?
-      // say congrats and show a menu of where to go?
-      
-      // we need to set a cookie so next time user comes back
-      // we don't have to go thru this process again
-      // note: '/' says: let this cookie be accessible to
-      //    every directory on my domain
-      //setcookie('token', $token, strtotime('+1 year'), '/');
-      //Router::redirect('/users/edit_profile');
-      
-    // failure
-    //} else {
-      // display fail message with 'back' button to try again?
-      // or send back ourselves with some error messages?
-
-      //Router::redirect('/users/login/error/');
-    //}
-
+    if ($token) {
+      $this->userObj->login_redirect($token, $email, '/users/index/');
+    } else {
+      Router::redirect('/users/login/error');
+    }
 
   }
   
   public function logout()
   {
-    $this->template->title = 'Log out of ArgyBargy';
-    $client_files_head = Array('/css/main.css');
-
-    /* Load client files */
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
-  
-    echo $this->template;
-    
+    $this->userObj->logout($this->user->email);
+    Router::redirect("/");
   }
 
   public function edit_profile()
