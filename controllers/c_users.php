@@ -11,7 +11,18 @@ class users_controller extends base_controller
   
   public function index() 
   {
-    echo "This is the index page.";
+    // set up the head
+    $this->template->title = 'ArgyBargy';
+    $client_files_head = Array('/css/main.css');
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+
+    // set up the body
+    $this->template->content = View::instance('v_users_index');
+
+    // render the template
+    echo $this->template;
+    
   }
 
   public function signup($error = null)

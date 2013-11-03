@@ -9,6 +9,7 @@
 </div>
 
 <div class='grid_3 suffix_1'>
+  <?php if (!$user): ?>
   <div class='sign-in'>
     <h2>Log in</h2>
     <form action='/users/p_login' method='post'>
@@ -21,4 +22,5 @@
     <h2>New user?</h2>
     <p><a class='btn' href='/users/signup'>Sign up!</a></p>
   </div>
+  <?php endif; ?>
 </div>
