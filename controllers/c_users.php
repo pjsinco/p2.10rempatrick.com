@@ -73,14 +73,17 @@ class users_controller extends base_controller
       Router::redirect('/users/signup/username-exists');
     }
 
+
+    /*************************************************************/
     //I know the User class's signup() method calls
     //confirm_unique_email, but I don't know how to handle
     //the query string it appends to the url
+    /*************************************************************/
 
     // 3. if email is taken, send error message
-    if (!$this->userObj->confirm_unique_email($_POST['email'])) {
-      Router::redirect('/users/signup/email-exists');
-    }
+    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
+      //Router::redirect('/users/signup/email-exists');
+    //}
 
     $result = $this->userObj->signup($_POST);
 
@@ -99,6 +102,8 @@ class users_controller extends base_controller
     /********************************************************/
     /*     DON"T APPPEND '.php' to View instances           */
     /********************************************************/
+
+    echo Debug::dump($_GET); 
 
     // set up the head
     $this->template->title = 'Log in to ArgyBargy';
