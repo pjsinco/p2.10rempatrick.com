@@ -170,7 +170,7 @@ class users_controller extends base_controller
     $email = $_POST['email'];
     $token = $this->userObj->login($email, $_POST['password']);
     if ($token) {
-      $this->userObj->login_redirect($token, $email, '/users/index/');
+      $this->userObj->login_redirect($token, $email, '/posts/index/');
     // 2. if user doesn't exists, send error message
     } else {
       Router::redirect('/users/login/no-user');
@@ -208,39 +208,42 @@ class users_controller extends base_controller
   public function p_edit_profile() 
   {
     // error possibilities:
-      //1. email taken
-      //2. db error
+      //1. email blank
+      //2. email taken
+      //3. db error
 
-    // 1. check to make sure email isn't taken
+    // 1. make sure the mail field isn't blank
+    if (empty($_POST['email'])) {
+      Router::redirect('/users/edit_profile/' . 
+        $this->user->user_name . '/email_blank');
+    }
+    
+    // 2. check to make sure email isn't taken
     // get user_id, if any, of email
     $q = "
       select user_id
       from users
       where email = '" . $_POST['email'] . "'
     ";
-    //echo Debug::dump($_POST['email']);
-    //echo Debug::dump($this->user->user_id);
-    //echo Debug::dump(DB::instance(DB_NAME)->select_field($q));
-    //echo Debug::dump($this->userObj->confirm_unique_email($_POST['email']));
+
     if (!$this->userObj->confirm_unique_email($_POST['email']) &&
       DB::instance(DB_NAME)->select_field($q) != $this->user->user_id) {
       Router::redirect('/users/edit_profile/' . 
         $this->user->user_name . '/email_exists');
     }
 
-    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
-      //Router::redirect('/users/edit_profile/' . 
-        //$this->user->user_name . '/email_exists');
-    //}
-      
     //echo Debug::dump($_POST);  
     $user_id = $this->user->user_id;
     $result = 
       DB::instance(DB_NAME)->update(
         'users', $_POST, "WHERE user_id = $user_id");
 
-    Router::redirect('/users/profile/' . 
-      $this->user->user_name);
+    if ($result) {
+      Router::redirect('/users/profile/' . $this->user->user_name);
+    } else {
+      Router::redirect('/users/edit_profile/error');
+      
+    }
 
   }
 
@@ -250,9 +253,10 @@ class users_controller extends base_controller
       //Router::redirect('/'); // sorry, go back to home page
       die('Members only. <a href="/users/login">Login</a>');
     }
+
     /* SET UP THE VIEW */
-    // cool: add title on the fly!
-    $this->template->title = 'Profile for ' . $this->user->user_name;
+    $this->template->title = 'Profile for ' . 
+      ($user_name == NULL ? $this->user->user_name : $user_name);
     
     /* Make array of all files to go into head of document */
     $client_files_head = Array(
@@ -265,15 +269,27 @@ class users_controller extends base_controller
     
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
-    //$this->template->content->user_name = $user_name;
-    //$this->template->content->color = 'linen';
 
-    //$q = "select user_name from users where first_name = '$user_name'";
-    //$this->template->content->email = $q;
-    
-    /* Load client files */
-    //$this->template->client_files_body = 
-      //Utils::load_client_files($client_files_body);
+    // if user (peeker) is looking at someone else's (peeked) profile ...
+    // pass peeked's profile info to view 
+    if ($user_name != $this->user->user_name) {
+      $q = "
+        select first_name, last_name, email, location, bio
+        from users
+        where user_name = '" . $user_name . "'
+      ";
+      $user = DB::instance(DB_NAME)->select_row($q, 'assoc');
+      if ($user) {
+        // peeker is a flag for the view to check
+        $this->template->content->peeker = true;
+        $this->template->content->user_name = $user_name;
+        $this->template->content->first_name = $user['first_name'];
+        $this->template->content->last_name = $user['last_name'];
+        $this->template->content->email = $user['email'];
+        $this->template->content->location = $user['location'];
+        $this->template->content->bio = $user['bio'];
+      }
+    }
     
     /* DISPLAY */
     echo $this->template;
@@ -304,6 +320,37 @@ class users_controller extends base_controller
     $result = DB::instance(DB_NAME)->select_field($q);
     return ($result == null ? False : True);
   }
+
+  
+  public function users()
+  {
+    // set up the head
+    $this->template->title = APP_NAME . ' | People';
+    $client_files_head = Array(
+      '/css/main.css'
+    );
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+
+    // set up the body
+    $this->template->content = View::instance('v_users_users');
+  
+    // build query
+    $q = "
+      SELECT user_name
+      FROM users
+    ";
+
+    // get list of all users
+    $users = DB::instance(DB_NAME)->select_rows($q, 'assoc');
+    
+    // pass array of users to view
+    $this->template->content->users = $users;
+
+    // render template
+    echo $this->template;
+
+  }
   
   // for fun
   public function all_globals()
@@ -333,44 +380,5 @@ class users_controller extends base_controller
     echo '</pre>';  
   }
   
-  // for fun
-  public function env()
-  {
-    echo '<pre>';  
-    print_r($_ENV);
-    echo '</pre>';  
-  } 
-  
-  public function form_prac() {
-    $this->template->content = View::instance('v_users_form_prac');
-    $this->template->title = 'Form practice';
-    
-    $client_files_head = Array(
-      '/css/main.css'
-    );
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
-
-    // make a form
-    $form = new Form();
-
-    $this->content->form = $form->open('form', '/users/p_form_prac');
-
-    echo $this->template;
-    
-  }
-
-  public function p_form_prac() {
-
-  }
-
-
-  // for fun
-  public function global_server()
-  {
-    echo '<pre>';  
-    print_r($_SERVER);
-    echo '</pre>';  
-  } 
 } // eoc
 ?>

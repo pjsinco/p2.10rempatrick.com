@@ -7,6 +7,10 @@
 <h1>Edit your profile</h1>
 <?php if (isset($error) && $error == 'email_exists'): ?>
   <div class='error'>That email is already taken.</div>
+<?php elseif (isset($error) && $error == 'email_blank'): ?>
+  <div class='error'>Please include an email address.</div>
+<?php elseif (isset($error) && $error == 'error'): ?>
+  <div class='error'>Edit failed. Please try again.</div>
 <?php endif; ?>
 <form action="/users/p_edit_profile" method="post" accept-charset="utf-8">
   First name<br>

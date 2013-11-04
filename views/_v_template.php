@@ -18,9 +18,10 @@
     <a href="/" title='Welcome to ArgyBargy'><img src='/images/argybargy-blue150.gif' alt='ArgyBargy logo'></a>
 <!--       menu for logged-in users -->
       <?php if($user): ?>
-        Welcome, <?=$user->user_name?>
+        <a href='/posts/add'>Post</a>
+        <a href='/users/users'>People</a>
         <a href='/users/logout'>Logout</a>
-        <a href='/users/profile/<?php echo $user->user_name; ?>'>Profile</a>
+        <a href='/users/profile/<?php echo $user->user_name; ?>'><?=$user->user_name?></a>
 <!--       menu for non-logged-in users -->
       <?php else: ?>
         <a href='/users/signup'>Sign up</a>
