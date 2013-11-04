@@ -73,9 +73,10 @@ class posts_controller extends base_controller
         //on p.user_id = p.user_id
       //where p.user_id = " . $this->user->user_id;
     $q = "
-      select p.content, u.user_name, p.created
-      from posts p inner join users u
-        on p.user_id = u.user_id
+      SELECT p.content, u.user_name, p.created
+      FROM posts p INNER JOIN users u
+        ON p.user_id = u.user_id
+      ORDER BY p.created DESC
     ";
 
     $posts = DB::instance(DB_NAME)->select_rows($q, 'assoc');    

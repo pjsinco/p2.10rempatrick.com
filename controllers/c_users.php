@@ -210,29 +210,25 @@ class users_controller extends base_controller
       from users
       where email = '" . $_POST['email'] . "'
     ";
-    //echo Debug::dump($_POST['email']);
-    //echo Debug::dump($this->user->user_id);
-    //echo Debug::dump(DB::instance(DB_NAME)->select_field($q));
-    //echo Debug::dump($this->userObj->confirm_unique_email($_POST['email']));
+
     if (!$this->userObj->confirm_unique_email($_POST['email']) &&
       DB::instance(DB_NAME)->select_field($q) != $this->user->user_id) {
       Router::redirect('/users/edit_profile/' . 
         $this->user->user_name . '/email_exists');
     }
 
-    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
-      //Router::redirect('/users/edit_profile/' . 
-        //$this->user->user_name . '/email_exists');
-    //}
-      
     //echo Debug::dump($_POST);  
     $user_id = $this->user->user_id;
     $result = 
       DB::instance(DB_NAME)->update(
         'users', $_POST, "WHERE user_id = $user_id");
 
-    Router::redirect('/users/profile/' . 
-      $this->user->user_name);
+    if ($result) {
+      Router::redirect('/users/profile/' . $this->user->user_name);
+    } else {
+      Router::redirect('/users/edit_profile/error');
+      
+    }
 
   }
 
@@ -257,8 +253,6 @@ class users_controller extends base_controller
     
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
-    //$this->template->content->user_name = $user_name;
-    //$this->template->content->color = 'linen';
 
     //$q = "select user_name from users where first_name = '$user_name'";
     //$this->template->content->email = $q;
@@ -296,6 +290,37 @@ class users_controller extends base_controller
     $result = DB::instance(DB_NAME)->select_field($q);
     return ($result == null ? False : True);
   }
+
+  
+  public function users()
+  {
+    // set up the head
+    $this->template->title = APP_NAME . ' | People';
+    $client_files_head = Array(
+      '/css/main.css'
+    );
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+
+    // set up the body
+    $this->template->content = View::instance('v_users_users');
+  
+    // build query
+    $q = "
+      SELECT user_name
+      FROM users
+    ";
+
+    // get list of all users
+    $users = DB::instance(DB_NAME)->select_rows($q, 'assoc');
+    
+    // pass array of users to view
+    $this->template->content->users = $users;
+
+    // render template
+    echo $this->template;
+
+  }
   
   // for fun
   public function all_globals()
@@ -325,44 +350,5 @@ class users_controller extends base_controller
     echo '</pre>';  
   }
   
-  // for fun
-  public function env()
-  {
-    echo '<pre>';  
-    print_r($_ENV);
-    echo '</pre>';  
-  } 
-  
-  public function form_prac() {
-    $this->template->content = View::instance('v_users_form_prac');
-    $this->template->title = 'Form practice';
-    
-    $client_files_head = Array(
-      '/css/main.css'
-    );
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
-
-    // make a form
-    $form = new Form();
-
-    $this->content->form = $form->open('form', '/users/p_form_prac');
-
-    echo $this->template;
-    
-  }
-
-  public function p_form_prac() {
-
-  }
-
-
-  // for fun
-  public function global_server()
-  {
-    echo '<pre>';  
-    print_r($_SERVER);
-    echo '</pre>';  
-  } 
 } // eoc
 ?>
