@@ -380,7 +380,7 @@ body {
 /*
  * My styles
  */
-.sign-in {
+.display {
   background-color: white;
   padding: 10px;
   border-radius: 5px;
@@ -388,6 +388,7 @@ body {
   -moz-border-radius: 5px;
   margin-bottom: 10px;
 }
+
 
 .error {
   color: red;

@@ -10,7 +10,7 @@
 
 <div class='grid_3 suffix_1'>
   <?php if (!$user): ?>
-  <div class='sign-in'>
+  <div class='display'>
     <h2>Log in</h2>
     <form action='/users/p_login' method='post'>
         Email <input type='text' name='email'><br>
@@ -18,7 +18,7 @@
         <input type='submit' value='Log in'>
     </form>
   </div>
-  <div class='sign-in'>
+  <div class='display'>
     <h2>New user?</h2>
     <p><a class='btn' href='/users/signup'>Sign up!</a></p>
   </div>

@@ -92,8 +92,16 @@ class users_controller extends base_controller
 
     // success
     if ($result) {
+      // log in user automatically
+      $token = $this->userObj->login($_POST['email'], $_POST['password']);
+
+      // send new user to edit_profile
+      Router::redirect('/users/edit_profile/new-user/' .
+        $_POST['user_name']);
+
+
       //redirect user to login page
-      Router::redirect('/users/login/new-user/' . $_POST['user_name']);
+      //Router::redirect('/users/login/new-user/' . $_POST['user_name']);
       // 4. if some other error occurs, send general error message
     } else {
       Router::redirect('/users/signup/error');
@@ -106,7 +114,7 @@ class users_controller extends base_controller
     /*     DON"T APPPEND '.php' to View instances           */
     /********************************************************/
 
-    echo Debug::dump($_GET); 
+    //echo Debug::dump($_GET); 
 
     // set up the head
     $this->template->title = 'Log in to ArgyBargy';
@@ -158,19 +166,19 @@ class users_controller extends base_controller
     Router::redirect("/");
   }
 
-  //public function edit_profile()
-  //{
-    //$this->template->title= 'Edit profile';
-    //$client_files_head = Array('/css/main.css');
+  public function edit_profile()
+  {
+    $this->template->title= 'Edit profile';
+    $client_files_head = Array('/css/main.css');
 
      //Load client files 
-    //$this->template->client_files_head = 
-      //Utils::load_client_files($client_files_head);
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
   
-    //$this->template->content = View::instance('v_users_edit_profile');
+    $this->template->content = View::instance('v_users_edit_profile');
     //Render the view
-    //echo $this->template;
-  //}
+    echo $this->template;
+  }
 
   public function p_edit_profile() 
   {
@@ -203,17 +211,13 @@ class users_controller extends base_controller
       die('Members only. <a href="/users/login">Login</a>');
     }
     /* SET UP THE VIEW */
-    // note: we can say $this->template because
-    // $this->template is already set up for us in
-    // base_controller.
     // cool: add title on the fly!
-    $this->template->title = 'Profile for ... ';
+    $this->template->title = 'Profile for ' . $this->user->user_name;
     
     /* Make array of all files to go into head of document */
     $client_files_head = Array(
       '/css/main.css'
     );
-    //$client_files_body = Array('/js/sample-app.js');
     
     /* Load client files */
     $this->template->client_files_head = 
@@ -221,7 +225,7 @@ class users_controller extends base_controller
     
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
-    $this->template->content->user_name = $user_name;
+    //$this->template->content->user_name = $user_name;
     //$this->template->content->color = 'linen';
 
     //$q = "select user_name from users where first_name = '$user_name'";
