@@ -87,9 +87,37 @@ class posts_controller extends base_controller
 
     //render template
     echo $this->template;
-
   }
 
+  public function follow($user_id_to_follow)
+  {
+    // set up the info we'll be updating
+    $data = Array(
+      'created' => Time::now(),
+      'user_id' => $this->user->user_id,
+      'user_id_followed' => $user_id_to_follow
+    );
+
+    $result = DB::instance(DB_NAME)->insert('users_users', $data);
+    if ($result) {
+      Router::redirect('/users/users');
+    } else {
+
+    }
+  }
+
+  public function unfollow($user_id_to_unfollow)
+  {
+    // delete the connection
+    $where_condition = "
+      where user_id = " . $this->user->user_id . 
+        " and user_id_followed = $user_id_to_unfollow
+    ";
+
+    DB::instance(DB_NAME)->delete('users_users', $where_condition);
+    
+    Router::redirect('/users/users');
+  }
 
 }
 ?>
