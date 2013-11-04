@@ -306,7 +306,6 @@ class users_controller extends base_controller
     return ($result == null ? False : True);
   }
 
-  
   public function users()
   {
     // set up the head
@@ -322,15 +321,30 @@ class users_controller extends base_controller
   
     // build query
     $q = "
-      SELECT user_name
-      FROM users
+      select *
+      from users
     ";
 
     // get list of all users
     $users = DB::instance(DB_NAME)->select_rows($q, 'assoc');
+
+    // build query to figure out connections user has
+    // iow, who are they following?
+    $q = "
+      select *
+      from users_users
+      where user_id = " . $this->user->user_id;
+
+    // get array of all people user is following
+    $connections = 
+      DB::instance(DB_NAME)->select_array($q, 'user_id_followed');
     
-    // pass array of users to view
+    //echo Debug::dump($connections);
+    //echo Debug::dump($connections[0]);
+
+    // pass array of users, connections to view
     $this->template->content->users = $users;
+    $this->template->content->connections = $connections;
 
     // render template
     echo $this->template;

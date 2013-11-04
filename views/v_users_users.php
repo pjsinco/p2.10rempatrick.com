@@ -5,7 +5,20 @@
   <div class='display'>
     <?php if (isset($users)): ?>
       <?php foreach($users as $user): ?>
-        <p><a href='/users/profile/<?=$user['user_name']?>'><?=$user['user_name']?></a></p>
+        <p>
+<!--         link to user's profile -->
+          <a href='/users/profile/<?=$user['user_name']?>'><?=$user['user_name']?></a>&nbsp;
+<!--         if there's a connection, show unfollow link -->
+          <?php //echo Debug::dump(isset($connections[$user['user_id']])); ?>
+          <?php if (isset($connections[$user['user_id']])): ?>
+          <a href='/posts/unfollow/<?=$user['user_id']?>'>
+            Unfollow
+          <?php else: ?>
+          <a href='/posts/follow/<?=$user['user_id']?>'>
+            Follow
+          <?php endif; ?>
+          </a>
+        </p>
       <?php endforeach; ?>
     <?php else: ?>
       <p>There are no other users</p>
