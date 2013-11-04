@@ -5,11 +5,11 @@
   <div class='display'>
   
 <!--   process any error messages -->
-  <?php if (isset($error) && $error == 'email-exists'): ?>
+  <?php if (isset($error) && $error == 'email_exists'): ?>
     <div class='error'>That email is already taken. Please choose another.</div>
-  <?php elseif (isset($error) && $error == 'blank-fields'): ?>
+  <?php elseif (isset($error) && $error == 'blank_fields'): ?>
     <div class='error'>Sign-up failed&mdash;all fields are required. Please try again.</div>
-  <?php elseif (isset($error) && $error == 'username-exists'): ?>
+  <?php elseif (isset($error) && $error == 'username_exists'): ?>
     <div class='error'>That user name is already taken. Please choose another.</div>
   <?php elseif (isset($error) && $error == 'error'): ?>
     <div class='error'>Sign-up failed. Please try again.</div>

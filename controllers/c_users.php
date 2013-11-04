@@ -58,13 +58,13 @@ class users_controller extends base_controller
     // 1. if any fields are blank, send error message
     foreach ($_POST as $field => $value) {
       if(empty($value)) {
-        Router::redirect('/users/signup/blank-fields');
+        Router::redirect('/users/signup/blank_fields');
       }
     }
 
     // 2. if user_name is taken, send error message
     if ($this->username_exists($_POST['user_name'])) {
-      Router::redirect('/users/signup/username-exists');
+      Router::redirect('/users/signup/username_exists');
     }
     //$q = "
       //SELECT user_name
@@ -115,6 +115,9 @@ class users_controller extends base_controller
     /********************************************************/
 
     //echo Debug::dump($_GET); 
+    if (isset($_GET['error']) and $_GET['error'] == 'dupemail') {
+      Router::redirect('/users/signup/email_exists');   
+    }
 
     // set up the head
     $this->template->title = 'Log in to ArgyBargy';
@@ -166,16 +169,23 @@ class users_controller extends base_controller
     Router::redirect("/");
   }
 
-  public function edit_profile()
+  public function edit_profile($user_name = null, $error = null)
   {
+    // NOTE: $user_name is essentially a placeholder 
+    // so we can get at the $error arg in the view
     $this->template->title= 'Edit profile';
     $client_files_head = Array('/css/main.css');
 
      //Load client files 
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
-  
+    
+    // set up the body
     $this->template->content = View::instance('v_users_edit_profile');
+
+    // pass error to view
+    $this->template->content->error = $error;
+  
     //Render the view
     echo $this->template;
   }
@@ -186,6 +196,27 @@ class users_controller extends base_controller
       //1. email taken
       //2. db error
 
+    // 1. check to make sure email isn't taken
+    // get user_id, if any, of email
+    $q = "
+      select user_id
+      from users
+      where email = '" . $_POST['email'] . "'
+    ";
+    //echo Debug::dump($_POST['email']);
+    //echo Debug::dump($this->user->user_id);
+    //echo Debug::dump(DB::instance(DB_NAME)->select_field($q));
+    //echo Debug::dump($this->userObj->confirm_unique_email($_POST['email']));
+    if (!$this->userObj->confirm_unique_email($_POST['email']) &&
+      DB::instance(DB_NAME)->select_field($q) != $this->user->user_id) {
+      Router::redirect('/users/edit_profile/' . 
+        $this->user->user_name . '/email_exists');
+    }
+
+    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
+      //Router::redirect('/users/edit_profile/' . 
+        //$this->user->user_name . '/email_exists');
+    //}
       
     //echo Debug::dump($_POST);  
     $user_id = $this->user->user_id;
@@ -198,12 +229,6 @@ class users_controller extends base_controller
 
   }
 
-  /*
-   * TODO what param to pass into profile?
-      email? 
-      if we don't pass anything, how do we know who
-      we're looking at?
-   */
   public function profile($user_name = NULL)
   {
     if (!$this->user) {

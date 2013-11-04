@@ -5,6 +5,9 @@
   <div class='display'>
   
 <h1>Edit your profile</h1>
+<?php if (isset($error) && $error == 'email_exists'): ?>
+  <div class='error'>That email is already taken.</div>
+<?php endif; ?>
 <form action="/users/p_edit_profile" method="post" accept-charset="utf-8">
   First name<br>
   <input type="text" name="first_name" value="<?=$user->first_name?>"><br>
@@ -21,5 +24,5 @@
 <!--   <input type="text" name="first_name"><br> -->
   Bio<br>
   <textarea name="bio" id= rows="8" cols="40"><?=$user->bio?></textarea><br>
- <br><input type='submit' value='Edit profile'>
+ <br><input type='submit' value='Update'>
 </form>
