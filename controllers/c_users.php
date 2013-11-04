@@ -238,9 +238,10 @@ class users_controller extends base_controller
       //Router::redirect('/'); // sorry, go back to home page
       die('Members only. <a href="/users/login">Login</a>');
     }
+
     /* SET UP THE VIEW */
-    // cool: add title on the fly!
-    $this->template->title = 'Profile for ' . $this->user->user_name;
+    $this->template->title = 'Profile for ' . 
+      ($user_name == NULL ? $this->user->user_name : $user_name);
     
     /* Make array of all files to go into head of document */
     $client_files_head = Array(
@@ -254,12 +255,26 @@ class users_controller extends base_controller
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
 
-    //$q = "select user_name from users where first_name = '$user_name'";
-    //$this->template->content->email = $q;
-    
-    /* Load client files */
-    //$this->template->client_files_body = 
-      //Utils::load_client_files($client_files_body);
+    // if user (peeker) is looking at someone else's (peeked) profile ...
+    // pass peeked's profile info to view 
+    if ($user_name != $this->user->user_name) {
+      $q = "
+        select first_name, last_name, email, location, bio
+        from users
+        where user_name = '" . $user_name . "'
+      ";
+      $user = DB::instance(DB_NAME)->select_row($q, 'assoc');
+      if ($user) {
+        // peeker is a flag for the view to check
+        $this->template->content->peeker = true;
+        $this->template->content->user_name = $user_name;
+        $this->template->content->first_name = $user['first_name'];
+        $this->template->content->last_name = $user['last_name'];
+        $this->template->content->email = $user['email'];
+        $this->template->content->location = $user['location'];
+        $this->template->content->bio = $user['bio'];
+      }
+    }
     
     /* DISPLAY */
     echo $this->template;
