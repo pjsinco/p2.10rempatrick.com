@@ -63,15 +63,18 @@ class users_controller extends base_controller
     }
 
     // 2. if user_name is taken, send error message
-    $q = "
-      SELECT user_name
-      FROM users
-      WHERE user_name = '" . $_POST['user_name'] . "'
-    ";
-    $result = DB::instance(DB_NAME)->select_field($q);
-    if ($result) {
+    if ($this->username_exists($_POST['user_name'])) {
       Router::redirect('/users/signup/username-exists');
     }
+    //$q = "
+      //SELECT user_name
+      //FROM users
+      //WHERE user_name = '" . $_POST['user_name'] . "'
+    //";
+    //$result = DB::instance(DB_NAME)->select_field($q);
+    //if ($result) {
+      //Router::redirect('/users/signup/username-exists');
+    //}
 
 
     /*************************************************************/
@@ -155,25 +158,38 @@ class users_controller extends base_controller
     Router::redirect("/");
   }
 
-  public function edit_profile()
-  {
-    $this->template->title= 'Edit profile';
-    $client_files_head = Array('/css/main.css');
+  //public function edit_profile()
+  //{
+    //$this->template->title= 'Edit profile';
+    //$client_files_head = Array('/css/main.css');
 
-    /* Load client files */
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
+     //Load client files 
+    //$this->template->client_files_head = 
+      //Utils::load_client_files($client_files_head);
   
-    $this->template->content = View::instance('v_users_edit_profile');
+    //$this->template->content = View::instance('v_users_edit_profile');
     //Render the view
-    echo $this->template;
-  }
+    //echo $this->template;
+  //}
 
   public function p_edit_profile() 
   {
+    // error possibilities:
+      //1. email taken
+      //2. db error
+
+      
+    //echo Debug::dump($_POST);  
+    $user_id = $this->user->user_id;
+    $result = 
+      DB::instance(DB_NAME)->update(
+        'users', $_POST, "WHERE user_id = $user_id");
+
+    Router::redirect('/users/profile/' . 
+      $this->user->user_name);
 
   }
-  
+
   /*
    * TODO what param to pass into profile?
       email? 
@@ -227,6 +243,24 @@ class users_controller extends base_controller
     //setcookie('raisin', 'awesome', strtotime('+1 year'), '/');
   //}
 
+  /*------------------------------------------
+    Purpose: Check to see if a user_name exists
+    Params: 
+      $user_name String
+    Returns: boolean
+  /*------------------------------------------*/
+  private function username_exists($user_name)
+  {
+    $q = "
+      SELECT user_name
+      FROM users
+      WHERE user_name = '" . $user_name . "'
+    ";
+
+    $result = DB::instance(DB_NAME)->select_field($q);
+    return ($result == null ? False : True);
+  }
+  
   // for fun
   public function all_globals()
   {
