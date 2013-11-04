@@ -58,36 +58,50 @@ class users_controller extends base_controller
     // 1. if any fields are blank, send error message
     foreach ($_POST as $field => $value) {
       if(empty($value)) {
-        Router::redirect('/users/signup/blank-fields');
+        Router::redirect('/users/signup/blank_fields');
       }
     }
 
     // 2. if user_name is taken, send error message
-    $q = "
-      SELECT user_name
-      FROM users
-      WHERE user_name = '" . $_POST['user_name'] . "'
-    ";
-    $result = DB::instance(DB_NAME)->select_field($q);
-    if ($result) {
-      Router::redirect('/users/signup/username-exists');
+    if ($this->username_exists($_POST['user_name'])) {
+      Router::redirect('/users/signup/username_exists');
     }
+    //$q = "
+      //SELECT user_name
+      //FROM users
+      //WHERE user_name = '" . $_POST['user_name'] . "'
+    //";
+    //$result = DB::instance(DB_NAME)->select_field($q);
+    //if ($result) {
+      //Router::redirect('/users/signup/username-exists');
+    //}
 
+
+    /*************************************************************/
     //I know the User class's signup() method calls
     //confirm_unique_email, but I don't know how to handle
     //the query string it appends to the url
+    /*************************************************************/
 
     // 3. if email is taken, send error message
-    if (!$this->userObj->confirm_unique_email($_POST['email'])) {
-      Router::redirect('/users/signup/email-exists');
-    }
+    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
+      //Router::redirect('/users/signup/email-exists');
+    //}
 
     $result = $this->userObj->signup($_POST);
 
     // success
     if ($result) {
+      // log in user automatically
+      $token = $this->userObj->login($_POST['email'], $_POST['password']);
+
+      // send new user to edit_profile
+      Router::redirect('/users/edit_profile/new-user/' .
+        $_POST['user_name']);
+
+
       //redirect user to login page
-      Router::redirect('/users/login/new-user/' . $_POST['user_name']);
+      //Router::redirect('/users/login/new-user/' . $_POST['user_name']);
       // 4. if some other error occurs, send general error message
     } else {
       Router::redirect('/users/signup/error');
@@ -99,6 +113,11 @@ class users_controller extends base_controller
     /********************************************************/
     /*     DON"T APPPEND '.php' to View instances           */
     /********************************************************/
+
+    //echo Debug::dump($_GET); 
+    if (isset($_GET['error']) and $_GET['error'] == 'dupemail') {
+      Router::redirect('/users/signup/email_exists');   
+    }
 
     // set up the head
     $this->template->title = 'Log in to ArgyBargy';
@@ -165,31 +184,66 @@ class users_controller extends base_controller
     Router::redirect("/");
   }
 
-  public function edit_profile()
+  public function edit_profile($user_name = null, $error = null)
   {
+    // NOTE: $user_name is essentially a placeholder 
+    // so we can get at the $error arg in the view
     $this->template->title= 'Edit profile';
     $client_files_head = Array('/css/main.css');
 
-    /* Load client files */
+     //Load client files 
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
-  
+    
+    // set up the body
     $this->template->content = View::instance('v_users_edit_profile');
+
+    // pass error to view
+    $this->template->content->error = $error;
+  
     //Render the view
     echo $this->template;
   }
 
   public function p_edit_profile() 
   {
+    // error possibilities:
+      //1. email taken
+      //2. db error
+
+    // 1. check to make sure email isn't taken
+    // get user_id, if any, of email
+    $q = "
+      select user_id
+      from users
+      where email = '" . $_POST['email'] . "'
+    ";
+    //echo Debug::dump($_POST['email']);
+    //echo Debug::dump($this->user->user_id);
+    //echo Debug::dump(DB::instance(DB_NAME)->select_field($q));
+    //echo Debug::dump($this->userObj->confirm_unique_email($_POST['email']));
+    if (!$this->userObj->confirm_unique_email($_POST['email']) &&
+      DB::instance(DB_NAME)->select_field($q) != $this->user->user_id) {
+      Router::redirect('/users/edit_profile/' . 
+        $this->user->user_name . '/email_exists');
+    }
+
+    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
+      //Router::redirect('/users/edit_profile/' . 
+        //$this->user->user_name . '/email_exists');
+    //}
+      
+    //echo Debug::dump($_POST);  
+    $user_id = $this->user->user_id;
+    $result = 
+      DB::instance(DB_NAME)->update(
+        'users', $_POST, "WHERE user_id = $user_id");
+
+    Router::redirect('/users/profile/' . 
+      $this->user->user_name);
 
   }
-  
-  /*
-   * TODO what param to pass into profile?
-      email? 
-      if we don't pass anything, how do we know who
-      we're looking at?
-   */
+
   public function profile($user_name = NULL)
   {
     if (!$this->user) {
@@ -197,17 +251,13 @@ class users_controller extends base_controller
       die('Members only. <a href="/users/login">Login</a>');
     }
     /* SET UP THE VIEW */
-    // note: we can say $this->template because
-    // $this->template is already set up for us in
-    // base_controller.
     // cool: add title on the fly!
-    $this->template->title = 'Profile for ... ';
+    $this->template->title = 'Profile for ' . $this->user->user_name;
     
     /* Make array of all files to go into head of document */
     $client_files_head = Array(
       '/css/main.css'
     );
-    //$client_files_body = Array('/js/sample-app.js');
     
     /* Load client files */
     $this->template->client_files_head = 
@@ -215,7 +265,7 @@ class users_controller extends base_controller
     
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
-    $this->template->content->user_name = $user_name;
+    //$this->template->content->user_name = $user_name;
     //$this->template->content->color = 'linen';
 
     //$q = "select user_name from users where first_name = '$user_name'";
@@ -237,6 +287,24 @@ class users_controller extends base_controller
     //setcookie('raisin', 'awesome', strtotime('+1 year'), '/');
   //}
 
+  /*------------------------------------------
+    Purpose: Check to see if a user_name exists
+    Params: 
+      $user_name String
+    Returns: boolean
+  /*------------------------------------------*/
+  private function username_exists($user_name)
+  {
+    $q = "
+      SELECT user_name
+      FROM users
+      WHERE user_name = '" . $user_name . "'
+    ";
+
+    $result = DB::instance(DB_NAME)->select_field($q);
+    return ($result == null ? False : True);
+  }
+  
   // for fun
   public function all_globals()
   {

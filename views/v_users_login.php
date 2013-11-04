@@ -2,7 +2,7 @@
   <img src='/images/argybargy300.gif' alt='ArgyBargy logo'>
 </div>
 <div class='prefix_2 grid_8 suffix_2'>
-  <div class='sign-up'>
+  <div class='display'>
     <?php if (isset($flag) && $flag == 'new-user'): ?>
     <h2>Welcome to ArgyBargy, <?=$user_name?></h2>
     <?php endif; ?>
