@@ -155,7 +155,7 @@ class users_controller extends base_controller
     $email = $_POST['email'];
     $token = $this->userObj->login($email, $_POST['password']);
     if ($token) {
-      $this->userObj->login_redirect($token, $email, '/users/index/');
+      $this->userObj->login_redirect($token, $email, '/posts/index/');
     // 2. if user doesn't exists, send error message
     } else {
       Router::redirect('/users/login/no-user');
@@ -193,10 +193,17 @@ class users_controller extends base_controller
   public function p_edit_profile() 
   {
     // error possibilities:
-      //1. email taken
-      //2. db error
+      //1. email blank
+      //2. email taken
+      //3. db error
 
-    // 1. check to make sure email isn't taken
+    // 1. make sure the mail field isn't blank
+    if (empty($_POST['email'])) {
+      Router::redirect('/users/edit_profile/' . 
+        $this->user->user_name . '/email_blank');
+    }
+    
+    // 2. check to make sure email isn't taken
     // get user_id, if any, of email
     $q = "
       select user_id
