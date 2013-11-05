@@ -2,6 +2,9 @@
 <!-- <div class='prefix_4 grid_4 suffix_4'></div> -->
 <div class='prefix_1 grid_6'>
   <div class='display'>
+    <?=$add_post?>
+  </div>
+  <div class='display'>
     <?=$stream?>
   </div>
 </div>
@@ -9,7 +12,7 @@
   <div class='display'>
     <?php if (isset($peeker) && $peeker == true): ?>
 <!--     a peeker is looking at a profile -->
-    <h1><?=$user_name?></h1>
+    <h1 class='user_name'><?=$user_name?></h1>
     <p>First name: <strong><?=$first_name?></strong></p>
     <p>Last name: <strong><?=$last_name?></strong></p>
     <p>Location: <strong><?=$location?></strong></p>
@@ -17,7 +20,7 @@
     <?php else: ?>
 <!--     the user is checking his/her own profile -->
 <!--     so include email and edit button -->
-    <h1><?=$user->user_name?></h1>
+    <h1 class='user_name'><?=$user->user_name?></h1>
     <p>First name: <strong><?=$user->first_name?></strong></p>
     <p>Last name: <strong><?=$user->last_name?></strong></p>
     <p>Email: <strong><?=$user->email?></strong></p>
@@ -31,17 +34,6 @@
     Following: <?=$following_count?>
     Followers: <?=$followers_count?>
     Posts: <?=$post_count?>
-  </div>
-  <div class='display'>
-    <?php if (isset($connections[$user['user_id']])): ?>
-    <a href='/posts/unfollow/<?=$user['user_id']?>'>
-      Unfollow
-    <?php else: ?>
-    <a href='/posts/follow/<?=$user['user_id']?>'>
-      Follow
-    <?php endif; ?>
-    </a>
-    
   </div>
 </div>
 </div>

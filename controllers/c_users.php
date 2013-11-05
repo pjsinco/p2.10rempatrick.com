@@ -280,7 +280,8 @@ class users_controller extends base_controller
       $counts['followers_count'];
     $this->template->content->following_count = 
       $counts['following_count'];
-    // set up view within a view
+
+    // set up stream view 
     $this->template->content->stream = View::instance('v_posts_stream');
     // send posts to the stream view
     if ($user_name == $this->user->user_name) {
@@ -289,6 +290,9 @@ class users_controller extends base_controller
       $this->template->content->stream->posts = $user_posts;
     }
     $this->template->content->stream->user_name = $user_name;
+
+    // set up add_posts view within profile view
+    $this->template->content->add_post = View::instance('v_posts_add');
 
     // if user (peeker) is looking at someone else's (peeked) profile ...
     // pass peeked's profile info to view 
@@ -399,7 +403,7 @@ class users_controller extends base_controller
 
   }
   
-  public function get_connections($user_id)
+  private function get_connections($user_id)
   {
     // figure out connections user has
     // iow, who are they following?

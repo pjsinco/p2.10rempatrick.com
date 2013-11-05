@@ -16,9 +16,14 @@
 
 body {
   min-width: 960px;
-  background-color: #8eacd8;
+  /*background-color: #8eacd8;*/
+  background-color: #afc7ec;
+  /*background-color: #a8eadd;*/
   font-family: Arial,Helvetica Neue,Helvetica,sans-serif;
-  color: #444;
+  /*color: #5e5e5e;*/
+  color: #454853;
+  font-size: 16px;
+  line-height: 23px;
 }
 
 /* Containers
@@ -379,6 +384,12 @@ body {
 /*
  * My styles
  */
+
+p {
+  padding: 0 0 9px 0;
+  margin: 0;
+}
+
 .display {
   background-color: white;
   padding: 10px;
@@ -388,6 +399,21 @@ body {
   margin-bottom: 10px;
 }
 
+article {
+  padding: 0 0 24px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+a {
+  color: #2b8b78;
+  text-decoration: none;
+}
+
+.user_name {
+  background-color: #cef5ee;
+  padding: 14px;
+  margin-top: 0;
+}
 
 .error {
   color: red;
@@ -421,7 +447,8 @@ body {
   font-family: Arial;
   color: #ffffff;
   font-size: 20px;
-  background: #009705;
+  /*background: #009705;*/
+  background: #2b8b78;
   padding: 10px 20px 10px 20px;
   text-decoration: none;
 }
