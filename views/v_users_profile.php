@@ -22,4 +22,9 @@
     <p><a class='btn' href='/users/edit_profile/<?=$user->user_name?>'>Edit profile</a></p>
     <?php endif; ?>
   </div>
+  <div class="display">
+    Following: <?=$following_count?>
+    Followers: <?=$followers_count?>
+    Posts: <?=$post_count?>
+  </div>
 </div>

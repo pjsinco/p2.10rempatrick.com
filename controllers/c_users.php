@@ -239,29 +239,46 @@ class users_controller extends base_controller
       die('Members only. <a href="/users/login">Login</a>');
     }
 
-    /* SET UP THE VIEW */
+    // set up the view
     $this->template->title = 'Profile for ' . 
       ($user_name == NULL ? $this->user->user_name : $user_name);
-    
-    /* Make array of all files to go into head of document */
-    $client_files_head = Array(
-      '/css/main.css'
-    );
+    $client_files_head = Array('/css/main.css');
     
     /* Load client files */
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
+
+    // get user_id of passed $user_name
+    $q = "
+      select user_id
+      from users
+      where user_name = '";
+    $q .= ($user_name == NULL ? 
+      $this->user->user_name : $user_name);
+    $q .= "'";
+    
+    $user_id = DB::instance(DB_NAME)->select_field($q);
+  
+    // get post, follower, following counts
+    $counts = $this->get_counts($user_id);
+
+    //echo Debug::dump($counts);
     
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
+    $this->template->content->post_count = $counts['post_count'];
+    $this->template->content->followers_count = 
+      $counts['followers_count'];
+    $this->template->content->following_count = 
+      $counts['following_count'];
 
     // if user (peeker) is looking at someone else's (peeked) profile ...
     // pass peeked's profile info to view 
     if ($user_name != $this->user->user_name) {
       $q = "
-        select first_name, last_name, email, location, bio
-        from users
-        where user_name = '" . $user_name . "'
+        SELECT first_name, last_name, email, location, bio
+        FROM users
+        WHERE user_name = '" . $user_name . "'
       ";
       $user = DB::instance(DB_NAME)->select_row($q, 'assoc');
       if ($user) {
@@ -275,19 +292,54 @@ class users_controller extends base_controller
         $this->template->content->bio = $user['bio'];
       }
     }
-    
+
     /* DISPLAY */
     echo $this->template;
+  }
+  
+  /*-----------------------------------------------------------------
+  Get counts of posts, followers and followings for user
+  Param:
+    $user_id string
+  Returns:
+    associative array of counts:
+    (
+      'post_count' => ..., 
+      'followers_count' => ..., 
+      'following_count' => ...
+    )
+  -----------------------------------------------------------------*/
+  public function get_counts($user_id) 
+  {
+    // get count of posts
+    $q = "
+      SELECT count(*)
+      FROM posts
+      WHERE user_id = " . $user_id;
+    $post_count = DB::instance(DB_NAME)->select_field($q);
+
+    // get count of followers
+    $q = "
+      SELECT count(*)
+      FROM users_users
+      WHERE user_id_followed = " . $user_id;
+    $followers_count = DB::instance(DB_NAME)->select_field($q);
+
+    // get count of followings
+    $q = "
+      SELECT count(*)
+      FROM users_users
+      WHERE user_id = " . $user_id;
+    $following_count = DB::instance(DB_NAME)->select_field($q);
+
+    return array(
+      'post_count' => $post_count,
+      'followers_count' => $followers_count,
+      'following_count' => $following_count
+    );
     
   }
   
-  //public function cookie_monster()
-  //{
-    //setcookie('oatmeal', 'yummy', strtotime('+1 year'), '/');
-    //setcookie('chocochip', 'mmm', strtotime('+1 year'), '/');
-    //setcookie('raisin', 'awesome', strtotime('+1 year'), '/');
-  //}
-
   /*------------------------------------------
     Purpose: Check to see if a user_name exists
     Params: 
@@ -319,11 +371,11 @@ class users_controller extends base_controller
     // set up the body
     $this->template->content = View::instance('v_users_users');
   
-    // build query
+    // build query; be sure to not include $this->user
     $q = "
-      select *
+      select user_name, user_id
       from users
-    ";
+      where user_id != " . $this->user->user_id;
 
     // get list of all users
     $users = DB::instance(DB_NAME)->select_rows($q, 'assoc');

@@ -4,6 +4,7 @@
 <div class='prefix_2 grid_8 suffix_2'>
   <div class='display'>
     <?php if (isset($users)): ?>
+      <h1>Browse people</h1>
       <?php foreach($users as $user): ?>
         <p>
 <!--         link to user's profile -->

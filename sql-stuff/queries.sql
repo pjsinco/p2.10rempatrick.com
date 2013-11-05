@@ -1,3 +1,20 @@
+select count(*)
+from users_users
+where user_id = 29
+
+
+-- get count of followers
+select count(*)
+from users_users
+where user_id_followed = 27
+
+-- get count of posts 
+select count(*)
+from posts
+where user_id = 36
+
+
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
