@@ -1,3 +1,23 @@
+select content
+from posts
+where user_id = (
+  select user_id_followed
+  from users_users
+  where user_id = 29
+) 
+
+select user_id_followed
+from users_users uu inner join posts p
+  on uu.user_id = p.user_id
+where uu.user_id = 29
+
+select uu.*
+from users_users uu inner join posts p
+  on uu.user_id = p.user_id
+where uu.user_id = 29
+
+
+-- get count of people user is following
 select count(*)
 from users_users
 where user_id = 29
