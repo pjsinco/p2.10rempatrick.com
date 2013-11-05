@@ -141,7 +141,8 @@ class posts_controller extends base_controller
       FROM posts p INNER JOIN users_users uu
         ON p.user_id = uu.user_id_followed INNER JOIN users u
         ON p.user_id = u.user_id
-      WHERE uu.user_id = '" . $this->user->user_id . "'
+      WHERE uu.user_id = '" . $this->user->user_id . "' 
+        OR p.user_id = '" . $this->user->user_id ."' 
       ORDER BY p.created DESC
     ";
     $posts = DB::instance(DB_NAME)->select_rows($q);

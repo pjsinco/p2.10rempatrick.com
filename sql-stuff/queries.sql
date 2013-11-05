@@ -52,7 +52,9 @@ select
 from posts p inner join users_users uu
   on p.user_id = uu.user_id_followed inner join users u
   on p.user_id = u.user_id
-where uu.user_id = 29
+where uu.user_id = 1
+  or p.user_id = 1
+order by p.created desc
 
 select content
 from posts
