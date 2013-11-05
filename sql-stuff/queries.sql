@@ -1,3 +1,59 @@
+mysql> desc users_users;
++------------------+---------+------+-----+---------+----------------+
+| Field            | Type    | Null | Key | Default | Extra          |
++------------------+---------+------+-----+---------+----------------+
+| user_user_id     | int(11) | NO   | PRI | NULL    | auto_increment |
+| created          | int(11) | NO   |     | NULL    |                |
+| user_id          | int(11) | NO   | MUL | NULL    |                |
+| user_id_followed | int(11) | NO   |     | NULL    |                |
++------------------+---------+------+-----+---------+----------------+
+
+mysql> desc users;
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| user_id           | int(11)      | NO   | PRI | NULL    | auto_increment |
+| created           | int(11)      | YES  |     | NULL    |                |
+| modified          | int(11)      | YES  |     | NULL    |                |
+| token             | varchar(64)  | YES  |     | NULL    |                |
+| password          | varchar(64)  | YES  |     | NULL    |                |
+| last_login        | int(11)      | YES  |     | NULL    |                |
+| timezone          | varchar(64)  | YES  |     | NULL    |                |
+| user_name         | varchar(32)  | YES  |     | NULL    |                |
+| email             | varchar(128) | YES  |     | NULL    |                |
+| location          | varchar(128) | YES  |     | NULL    |                |
+| bio               | text         | YES  |     | NULL    |                |
+| ip                | varchar(64)  | YES  |     | NULL    |                |
+| state             | char(2)      | YES  |     | NULL    |                |
+| country           | varchar(64)  | YES  |     | NULL    |                |
+| city              | varchar(128) | YES  |     | NULL    |                |
+| registration_code | char(10)     | YES  |     | NULL    |                |
+| first_name        | varchar(64)  | YES  |     | NULL    |                |
+| last_name         | varchar(64)  | YES  |     | NULL    |                |
++-------------------+--------------+------+-----+---------+----------------+
+
+mysql> desc posts;
++----------+---------+------+-----+---------+----------------+
+| Field    | Type    | Null | Key | Default | Extra          |
++----------+---------+------+-----+---------+----------------+
+| post_id  | int(11) | NO   | PRI | NULL    | auto_increment |
+| created  | int(11) | NO   |     | NULL    |                |
+| modified | int(11) | NO   |     | NULL    |                |
+| user_id  | int(11) | NO   | MUL | NULL    |                |
+| content  | text    | NO   |     | NULL    |                |
++----------+---------+------+-----+---------+----------------+
+
+select 
+  p.content, 
+  p.created, 
+  p.user_id as post_user_id,
+  uu.user_id as follower_id,
+  u.user_name
+from posts p inner join users_users uu
+  on p.user_id = uu.user_id_followed inner join users u
+  on p.user_id = u.user_id
+where uu.user_id = 29
+
 select content
 from posts
 where user_id = (

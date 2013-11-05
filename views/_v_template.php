@@ -4,8 +4,8 @@
 	<title><?php if(isset($title)) echo $title; ?></title>
 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	
-    <link href='http://fonts.googleapis.com/css?family=Ruda:400,700,900' rel='stylesheet' type='text/css'>
-
+<!--     <link href='http://fonts.googleapis.com/css?family=Ruda:400,700,900' rel='stylesheet' type='text/css'> -->
+    <link rel='stylesheet' type='text/css' href='/css/main.css'>
 					
 	<!-- Controller Specific JS/CSS -->
 	<?php if(isset($client_files_head)) echo $client_files_head; ?>
@@ -20,6 +20,7 @@
       <?php if($user): ?>
         <a href='/posts/add'>Post</a>
         <a href='/users/users'>People</a>
+        <a href='/posts/stream'>Stream</a>
         <a href='/users/logout'>Logout</a>
         <a href='/users/profile/<?php echo $user->user_name; ?>'><?=$user->user_name?></a>
 <!--       menu for non-logged-in users -->

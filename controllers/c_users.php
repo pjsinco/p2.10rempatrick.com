@@ -154,8 +154,9 @@ class users_controller extends base_controller
 
     $email = $_POST['email'];
     $token = $this->userObj->login($email, $_POST['password']);
+    // success
     if ($token) {
-      $this->userObj->login_redirect($token, $email, '/posts/index/');
+      $this->userObj->login_redirect($token, $email, '/posts/stream');
     // 2. if user doesn't exists, send error message
     } else {
       Router::redirect('/users/login/no-user');

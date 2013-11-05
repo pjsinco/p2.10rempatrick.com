@@ -56,10 +56,8 @@ class posts_controller extends base_controller
   public function index() 
   {
     // set up the head
-    $this->template->title = 'Post for '. $this->user->user_name;
-    $client_files_head = Array(
-      '/css/main.css'
-    );
+    $this->template->title = APP_NAME . " | All posts";
+    $client_files_head = Array('/css/main.css');
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
 
@@ -117,6 +115,42 @@ class posts_controller extends base_controller
     DB::instance(DB_NAME)->delete('users_users', $where_condition);
     
     Router::redirect('/users/users');
+  }
+
+  public function stream()
+  {
+    // prep head
+    $this->template->title = APP_NAME . " | Stream for " .
+      $this->user->user_name;
+    $client_files_head = Array('/css/main.css');
+    $this->template->client_files_head = 
+      Utils::load_client_files($client_files_head);
+
+    $this->template->content = View::instance('v_posts_stream');
+
+    //view within a view
+    $this->template->content->add_post = View::instance('v_posts_add');
+
+    $q = "
+      SELECT 
+        p.content, 
+        p.created, 
+        p.user_id as post_user_id,
+        uu.user_id as follower_id,
+        u.user_name
+      FROM posts p INNER JOIN users_users uu
+        ON p.user_id = uu.user_id_followed INNER JOIN users u
+        ON p.user_id = u.user_id
+      WHERE uu.user_id = '" . $this->user->user_id . "'
+      ORDER BY p.created DESC
+    ";
+    $posts = DB::instance(DB_NAME)->select_rows($q);
+    
+    // pass data to view
+    $this->template->content->posts = $posts;
+
+    // render template
+    echo $this->template;
   }
 
 }
