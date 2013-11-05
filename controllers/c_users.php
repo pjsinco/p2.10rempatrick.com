@@ -66,27 +66,6 @@ class users_controller extends base_controller
     if ($this->username_exists($_POST['user_name'])) {
       Router::redirect('/users/signup/username_exists');
     }
-    //$q = "
-      //SELECT user_name
-      //FROM users
-      //WHERE user_name = '" . $_POST['user_name'] . "'
-    //";
-    //$result = DB::instance(DB_NAME)->select_field($q);
-    //if ($result) {
-      //Router::redirect('/users/signup/username-exists');
-    //}
-
-
-    /*************************************************************/
-    //I know the User class's signup() method calls
-    //confirm_unique_email, but I don't know how to handle
-    //the query string it appends to the url
-    /*************************************************************/
-
-    // 3. if email is taken, send error message
-    //if (!$this->userObj->confirm_unique_email($_POST['email'])) {
-      //Router::redirect('/users/signup/email-exists');
-    //}
 
     $result = $this->userObj->signup($_POST);
 
@@ -235,35 +214,64 @@ class users_controller extends base_controller
 
   public function profile($user_name = NULL)
   {
+    //NOTE:
+    //  'peeked' is the person whose profile is being looked at
+    //  'peeker' is the person doing the looking
+
     if (!$this->user) {
       //Router::redirect('/'); // sorry, go back to home page
       die('Members only. <a href="/users/login">Login</a>');
     }
 
-    // set up the view
-    $this->template->title = 'Profile for ' . 
-      ($user_name == NULL ? $this->user->user_name : $user_name);
-    $client_files_head = Array('/css/main.css');
-    
-    /* Load client files */
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
+    // set up the head
+    $this->template->title = APP_NAME . ' | Profile for ' . $user_name;
+      //($user_name == NULL ? $this->user->user_name : $user_name);
 
     // get user_id of passed $user_name
     $q = "
       select user_id
       from users
-      where user_name = '";
-    $q .= ($user_name == NULL ? 
-      $this->user->user_name : $user_name);
-    $q .= "'";
+      where user_name = '" . $user_name . "'
+    ";
     
     $user_id = DB::instance(DB_NAME)->select_field($q);
   
     // get post, follower, following counts
     $counts = $this->get_counts($user_id);
 
-    //echo Debug::dump($counts);
+    // get stream for user
+    $q = "
+      SELECT 
+        p.content, 
+        p.created, 
+        p.user_id as post_user_id,
+        uu.user_id as follower_id,
+        u.user_name
+      FROM posts p INNER JOIN users_users uu
+        ON p.user_id = uu.user_id_followed INNER JOIN users u
+        ON p.user_id = u.user_id
+      WHERE uu.user_id = '" . $user_id . "' 
+        OR p.user_id = '" . $user_id ."' 
+      ORDER BY p.created DESC
+    ";
+    $stream_posts = DB::instance(DB_NAME)->select_rows($q);
+
+    // get peeked's posts
+    // this is used when user is looking at someone else's profiles
+    // we want to display the peeked's posts
+    if ($user_name != $this->user->user_name) {
+      $q = "
+        SELECT p.content, p.created, u.user_name
+        FROM posts p inner join users u
+          ON p.user_id = u.user_id
+        WHERE p.user_id = (
+          SELECT user_id
+          FROM users
+          WHERE user_name = '" . $user_name . "'
+        )
+      ";
+      $user_posts = DB::instance(DB_NAME)->select_rows($q);
+    }
     
     /* PASS DATA TO THE VIEW */
     $this->template->content = View::instance('v_users_profile');
@@ -272,6 +280,15 @@ class users_controller extends base_controller
       $counts['followers_count'];
     $this->template->content->following_count = 
       $counts['following_count'];
+    // set up view within a view
+    $this->template->content->stream = View::instance('v_posts_stream');
+    // send posts to the stream view
+    if ($user_name == $this->user->user_name) {
+      $this->template->content->stream->posts = $stream_posts;
+    } else {
+      $this->template->content->stream->posts = $user_posts;
+    }
+    $this->template->content->stream->user_name = $user_name;
 
     // if user (peeker) is looking at someone else's (peeked) profile ...
     // pass peeked's profile info to view 
@@ -363,38 +380,16 @@ class users_controller extends base_controller
   {
     // set up the head
     $this->template->title = APP_NAME . ' | People';
-    $client_files_head = Array(
-      '/css/main.css'
-    );
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
 
     // set up the body
     $this->template->content = View::instance('v_users_users');
   
-    // build query; be sure to not include $this->user
-    $q = "
-      select user_name, user_id
-      from users
-      where user_id != " . $this->user->user_id;
+    // get all users
+    $users = $this->get_users($this->user->user_id);
 
-    // get list of all users
-    $users = DB::instance(DB_NAME)->select_rows($q, 'assoc');
-
-    // build query to figure out connections user has
-    // iow, who are they following?
-    $q = "
-      select *
-      from users_users
-      where user_id = " . $this->user->user_id;
-
-    // get array of all people user is following
-    $connections = 
-      DB::instance(DB_NAME)->select_array($q, 'user_id_followed');
+    // get user's connections
+    $connections = $this->get_connections($this->user->user_id);
     
-    //echo Debug::dump($connections);
-    //echo Debug::dump($connections[0]);
-
     // pass array of users, connections to view
     $this->template->content->users = $users;
     $this->template->content->connections = $connections;
@@ -404,32 +399,29 @@ class users_controller extends base_controller
 
   }
   
-  // for fun
-  public function all_globals()
+  public function get_connections($user_id)
   {
-    echo '<pre>';  
-    echo '<br>$_ENV<br>';
-    print_r($_ENV);
-    echo '<br>$_SERVER<br>';
-    print_r($_SERVER);
-    echo '<br>$_GET<br>';
-    print_r($_GET);
-    echo '<br>$_POST<br>';
-    print_r($_POST);
-    echo '<br>$_FILES<br>';
-    print_r($_FILES);
-    echo '<br>$_REQUEST<br>';
-    print_r($_REQUEST);
-    echo '<br>$_SESSION<br>';
-    print_r($_SESSION);
-    echo '<br>$_COOKIE<br>';
-    print_r($_COOKIE);
-    echo '<br>$argc<br>';
-    print_r($argc);
-    echo '<br>$argv<br>';
-    print_r($argv);
-    echo '<br><br><br><br>';
-    echo '</pre>';  
+    // figure out connections user has
+    // iow, who are they following?
+    $q = "
+      select *
+      from users_users
+      where user_id = " . $this->user->user_id;
+
+    // get array of all people user is following
+    return DB::instance(DB_NAME)->select_array($q, 'user_id_followed');
+  }
+
+  private function get_users($user_id)
+  {
+    // get list of all users
+    // build query; be sure to not include $this->user
+    $q = "
+      select user_name, user_id
+      from users
+      where user_id != " . $user_id;
+
+    return DB::instance(DB_NAME)->select_rows($q, 'assoc');
   }
   
 } // eoc

@@ -2,12 +2,11 @@
 <!-- <div class='prefix_4 grid_4 suffix_4'></div> -->
 <div class='prefix_1 grid_6'>
   <div class='display'>
-    <p> hello there hello there</p>
+    <?=$stream?>
   </div>
 </div>
 <div class='grid_4 suffix_1'>
   <div class='display'>
-
     <?php if (isset($peeker) && $peeker == true): ?>
 <!--     a peeker is looking at a profile -->
     <h1><?=$user_name?></h1>
@@ -32,6 +31,17 @@
     Following: <?=$following_count?>
     Followers: <?=$followers_count?>
     Posts: <?=$post_count?>
+  </div>
+  <div class='display'>
+    <?php if (isset($connections[$user['user_id']])): ?>
+    <a href='/posts/unfollow/<?=$user['user_id']?>'>
+      Unfollow
+    <?php else: ?>
+    <a href='/posts/follow/<?=$user['user_id']?>'>
+      Follow
+    <?php endif; ?>
+    </a>
+    
   </div>
 </div>
 </div>

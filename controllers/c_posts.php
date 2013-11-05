@@ -119,13 +119,6 @@ class posts_controller extends base_controller
 
   public function stream()
   {
-    // prep head
-    $this->template->title = APP_NAME . " | Stream for " .
-      $this->user->user_name;
-    $client_files_head = Array('/css/main.css');
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
-
     $this->template->content = View::instance('v_posts_stream');
 
     //view within a view

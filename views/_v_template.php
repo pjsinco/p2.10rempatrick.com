@@ -20,7 +20,6 @@
       <?php if($user): ?>
         <a href='/posts/add'>Post</a>
         <a href='/users/users'>People</a>
-        <a href='/posts/stream'>Stream</a>
         <a href='/users/logout'>Logout</a>
         <a href='/users/profile/<?php echo $user->user_name; ?>'><?=$user->user_name?></a>
 <!--       menu for non-logged-in users -->
