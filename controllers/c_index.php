@@ -22,6 +22,7 @@ class index_controller extends base_controller
     # Now set the <title> tag
     $this->template->title = "Welcome to " . APP_NAME;
 
+    // if the user is logged in, instead route to user's home page
     if ($this->user) {
       Router::redirect('/users/index/' . $this->user->user_name);
     }
