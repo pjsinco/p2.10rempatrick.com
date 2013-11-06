@@ -21,6 +21,12 @@ class index_controller extends base_controller
         
     # Now set the <title> tag
     $this->template->title = "Welcome to " . APP_NAME;
+
+    if ($this->user) {
+
+      Router::redirect('/users/profile/' . $this->user->user_name);
+      
+    }
   
     # Render the view
     echo $this->template;
