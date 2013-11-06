@@ -42,7 +42,7 @@ class posts_controller extends base_controller
     $rows = DB::instance(DB_NAME)->insert('posts', $_POST);
 
     if ($rows > 0) {
-      Router::redirect('/posts');
+      Router::redirect('/users/index/' . $this->user->user_name);
       //echo "Your post has been added.";
       //echo "<a href='/posts/add'>Add another</a>";
     } else {
