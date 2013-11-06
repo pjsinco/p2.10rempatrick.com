@@ -23,9 +23,7 @@ class index_controller extends base_controller
     $this->template->title = "Welcome to " . APP_NAME;
 
     if ($this->user) {
-
-      Router::redirect('/users/profile/' . $this->user->user_name);
-      
+      Router::redirect('/users/index/' . $this->user->user_name);
     }
   
     # Render the view

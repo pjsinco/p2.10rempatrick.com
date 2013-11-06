@@ -134,8 +134,18 @@ class users_controller extends base_controller
     $email = $_POST['email'];
     $token = $this->userObj->login($email, $_POST['password']);
     // success
+    // get user's user_name so we an we reroute to users/index
+    $q = "
+      select user_name
+      from users
+      where email = '" . $_POST['email'] . "'
+    ";
+    $user_name = DB::instance(DB_NAME)->select_field($q);
+    
     if ($token) {
-      $this->userObj->login_redirect($token, $email, '/posts/stream');
+      $this->userObj->login_redirect(
+        $token, $email, '/users/index/' . $user_name
+      );
     // 2. if user doesn't exists, send error message
     } else {
       Router::redirect('/users/login/no-user');
@@ -225,7 +235,7 @@ class users_controller extends base_controller
     }
 
     // set up the head
-    $this->template->title = APP_NAME . ' | Profile for ' . $user_name;
+    $this->template->title = APP_NAME . ' | Home for ' . $user_name;
       //($user_name == NULL ? $this->user->user_name : $user_name);
 
     // get user_id of passed $user_name
@@ -248,8 +258,8 @@ class users_controller extends base_controller
         p.user_id as post_user_id,
         uu.user_id as follower_id,
         u.user_name
-      FROM posts p INNER JOIN users_users uu
-        ON p.user_id = uu.user_id_followed INNER JOIN users u
+      FROM posts p LEFT JOIN users_users uu
+        ON p.user_id = uu.user_id_followed LEFT JOIN users u
         ON p.user_id = u.user_id
       WHERE uu.user_id = '" . $user_id . "' 
         OR p.user_id = '" . $user_id ."' 
