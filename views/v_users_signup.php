@@ -1,3 +1,4 @@
+<div class="grid_12 spacer"></div>
 <div class='prefix_1 grid_10 suffix_1'>
   <div class='display'>
   
@@ -11,12 +12,22 @@
   <?php elseif (isset($error) && $error == 'error'): ?>
     <div class='error'>Sign-up failed. Please try again.</div>
   <?php endif; ?>
-    <h2>Sign up for ArgyBargy</h2>
+<!--     <h2>Sign up for ArgyBargy</h2> -->
     <form action='/users/p_signup' method='post'>
-      User name<input type='text' name='user_name'><br>
-      Email <input type='text'  name='email'><br>
-      Password <input type='password' name='password'><br>
-      <input type='submit' value='Sign up'>
+      <fieldset>
+        <legend>Sign up for ArgyBargy</legend>
+        <p>
+          <label class='title' for='user_name'>User name</label>
+          <input class='inside' type='text' name='user_name'><br>
+
+          <label class='title' for='email'>Email</label>
+          <input class='inside' type='text' name='email'><br>
+
+          <label class='title' for='password'>Password</label>
+          <input class='inside' type='password' name='password'></p>
+
+          <input type='submit' value='Sign up'>
+      <fieldset>
     </form>
   </div>
 </div>
