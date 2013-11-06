@@ -9,21 +9,21 @@ class users_controller extends base_controller
     parent::__construct();
   } 
   
-  public function index() 
-  {
-    // set up the head
-    $this->template->title = 'ArgyBargy';
-    $client_files_head = Array('/css/main.css');
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
-
-    // set up the body
-    $this->template->content = View::instance('v_users_index');
-
-    // render the template
-    echo $this->template;
-    
-  }
+//  public function index() 
+//  {
+//    // set up the head
+//    $this->template->title = 'ArgyBargy';
+//    $client_files_head = Array('/css/main.css');
+//    $this->template->client_files_head = 
+//      Utils::load_client_files($client_files_head);
+//
+//    // set up the body
+//    $this->template->content = View::instance('v_users_index');
+//
+//    // render the template
+//    echo $this->template;
+//    
+//  }
 
   public function signup($error = null)
   {
@@ -203,8 +203,9 @@ class users_controller extends base_controller
       DB::instance(DB_NAME)->update(
         'users', $_POST, "WHERE user_id = $user_id");
 
+    // success
     if ($result) {
-      Router::redirect('/users/profile/' . $this->user->user_name);
+      Router::redirect('/users/index/' . $this->user->user_name);
     } else {
       Router::redirect('/users/edit_profile/error');
       
@@ -212,7 +213,7 @@ class users_controller extends base_controller
 
   }
 
-  public function profile($user_name = NULL)
+  public function index($user_name = NULL)
   {
     //NOTE:
     //  'peeked' is the person whose profile is being looked at
@@ -274,7 +275,7 @@ class users_controller extends base_controller
     }
     
     /* PASS DATA TO THE VIEW */
-    $this->template->content = View::instance('v_users_profile');
+    $this->template->content = View::instance('v_users_index');
     $this->template->content->post_count = $counts['post_count'];
     $this->template->content->followers_count = 
       $counts['followers_count'];
@@ -319,6 +320,29 @@ class users_controller extends base_controller
     echo $this->template;
   }
   
+  public function users()
+  {
+    // set up the head
+    $this->template->title = APP_NAME . ' | People';
+
+    // set up the body
+    $this->template->content = View::instance('v_users_users');
+  
+    // get all users
+    $users = $this->get_users($this->user->user_id);
+
+    // get user's connections
+    $connections = $this->get_connections($this->user->user_id);
+    
+    // pass array of users, connections to view
+    $this->template->content->users = $users;
+    $this->template->content->connections = $connections;
+
+    // render template
+    echo $this->template;
+
+  }
+
   /*-----------------------------------------------------------------
   Get counts of posts, followers and followings for user
   Param:
@@ -331,7 +355,7 @@ class users_controller extends base_controller
       'following_count' => ...
     )
   -----------------------------------------------------------------*/
-  public function get_counts($user_id) 
+  private function get_counts($user_id) 
   {
     // get count of posts
     $q = "
@@ -380,28 +404,6 @@ class users_controller extends base_controller
     return ($result == null ? False : True);
   }
 
-  public function users()
-  {
-    // set up the head
-    $this->template->title = APP_NAME . ' | People';
-
-    // set up the body
-    $this->template->content = View::instance('v_users_users');
-  
-    // get all users
-    $users = $this->get_users($this->user->user_id);
-
-    // get user's connections
-    $connections = $this->get_connections($this->user->user_id);
-    
-    // pass array of users, connections to view
-    $this->template->content->users = $users;
-    $this->template->content->connections = $connections;
-
-    // render template
-    echo $this->template;
-
-  }
   
   private function get_connections($user_id)
   {

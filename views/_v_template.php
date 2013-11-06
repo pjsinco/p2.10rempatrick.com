@@ -14,15 +14,14 @@
 <body>	
 <div class='container_12'>
 <div class='prefix_1 grid_3' id='menu'>
-  <a href="/" title='Welcome to ArgyBargy'><img src='/images/argybargy-blue150.gif' alt='ArgyBargy logo'></a>
+  <a href="/users/index/<?=$user->user_name?>" title='Welcome to ArgyBargy'><img src='/images/argybargy-blue150.gif' alt='ArgyBargy logo'></a>
 </div>
 <!--        menu for logged-in users -->
-<div class='prefix_3 grid_3 suffix_1'>
+<div class='prefix_3 grid_5'>
   <?php if($user): ?>
-    <a href='/posts/add'>Post</a>
     <a href='/users/users'>People</a>
     <a href='/users/logout'>Logout</a>
-    <a href='/users/profile/<?php echo $user->user_name; ?>'><?=$user->user_name?></a>
+    <a href='/users/index/<?=$user->user_name;?>'><?=$user->user_name?></a>
 <!--        menu for non-logged-in users -->
   <?php else: ?>
     <a href='/users/signup'>Sign up</a>
