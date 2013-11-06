@@ -9,22 +9,6 @@ class users_controller extends base_controller
     parent::__construct();
   } 
   
-//  public function index() 
-//  {
-//    // set up the head
-//    $this->template->title = 'ArgyBargy';
-//    $client_files_head = Array('/css/main.css');
-//    $this->template->client_files_head = 
-//      Utils::load_client_files($client_files_head);
-//
-//    // set up the body
-//    $this->template->content = View::instance('v_users_index');
-//
-//    // render the template
-//    echo $this->template;
-//    
-//  }
-
   public function signup($error = null)
   {
     /********************************************************/
@@ -78,9 +62,6 @@ class users_controller extends base_controller
       Router::redirect('/users/edit_profile/new-user/' .
         $_POST['user_name']);
 
-
-      //redirect user to login page
-      //Router::redirect('/users/login/new-user/' . $_POST['user_name']);
       // 4. if some other error occurs, send general error message
     } else {
       Router::redirect('/users/signup/error');
@@ -136,9 +117,9 @@ class users_controller extends base_controller
     // success
     // get user's user_name so we an we reroute to users/index
     $q = "
-      select user_name
-      from users
-      where email = '" . $_POST['email'] . "'
+      SELECT user_name
+      FROM users
+      WHERE email = '" . $_POST['email'] . "'
     ";
     $user_name = DB::instance(DB_NAME)->select_field($q);
     
@@ -146,11 +127,11 @@ class users_controller extends base_controller
       $this->userObj->login_redirect(
         $token, $email, '/users/index/' . $user_name
       );
-    // 2. if user doesn't exists, send error message
+
+    // 2. if user doesn't exist, send error message
     } else {
       Router::redirect('/users/login/no-user');
     }
-
   }
   
   public function logout()
@@ -218,9 +199,7 @@ class users_controller extends base_controller
       Router::redirect('/users/index/' . $this->user->user_name);
     } else {
       Router::redirect('/users/edit_profile/error');
-      
     }
-
   }
 
   public function index($user_name = NULL)
@@ -240,9 +219,9 @@ class users_controller extends base_controller
 
     // get user_id of passed $user_name
     $q = "
-      select user_id
-      from users
-      where user_name = '" . $user_name . "'
+      SELECT user_id
+      FROM users
+      WHERE user_name = '" . $user_name . "'
     ";
     
     $user_id = DB::instance(DB_NAME)->select_field($q);
@@ -284,16 +263,15 @@ class users_controller extends base_controller
       $user_posts = DB::instance(DB_NAME)->select_rows($q);
     }
     
-    /* PASS DATA TO THE VIEW */
+    // pass data to the view
     $this->template->content = View::instance('v_users_index');
     $this->template->content->post_count = $counts['post_count'];
-    $this->template->content->followers_count = 
-      $counts['followers_count'];
-    $this->template->content->following_count = 
-      $counts['following_count'];
+    $this->template->content->followers_count = $counts['followers_count'];
+    $this->template->content->following_count = $counts['following_count'];
 
     // set up stream view 
     $this->template->content->stream = View::instance('v_posts_stream');
+
     // send posts to the stream view
     if ($user_name == $this->user->user_name) {
       $this->template->content->stream->posts = $stream_posts;
@@ -326,7 +304,7 @@ class users_controller extends base_controller
       }
     }
 
-    /* DISPLAY */
+    // render display
     echo $this->template;
   }
   
@@ -415,19 +393,34 @@ class users_controller extends base_controller
   }
 
   
+  /*-----------------------------------------------------------------
+  Get array of user's connections
+  Param:
+    $user_id string
+  Returns:
+    array of user's connections
+  -----------------------------------------------------------------*/
   private function get_connections($user_id)
   {
     // figure out connections user has
     // iow, who are they following?
     $q = "
-      select *
-      from users_users
-      where user_id = " . $this->user->user_id;
+      SELECT *
+      FROM users_users
+      WHERE user_id = " . $this->user->user_id;
 
     // get array of all people user is following
     return DB::instance(DB_NAME)->select_array($q, 'user_id_followed');
   }
 
+  /*-----------------------------------------------------------------
+  Get list of all users
+  Param:
+    $user_id string
+  Returns:
+    array of all user names and id's, excluding the user whose
+    id is passed in
+  -----------------------------------------------------------------*/
   private function get_users($user_id)
   {
     // get list of all users
