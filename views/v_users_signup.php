@@ -26,7 +26,7 @@
           <label class='title' for='password'>Password</label>
           <input class='inside' type='password' name='password'></p>
 
-          <input type='submit' value='Sign up'>
+          <input class='submit' type='submit' value='Sign up'>
       <fieldset>
     </form>
   </div>

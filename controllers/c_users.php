@@ -58,6 +58,17 @@ class users_controller extends base_controller
       // log in user automatically
       $token = $this->userObj->login($_POST['email'], $_POST['password']);
 
+      /*
+       *send confirmation email
+       */
+      // build multidimensional array of email particulars
+      $to[] = array('name' => $_POST['user_name'], 'email' => $_POST['email']);
+      $from = array('name' => APP_NAME, 'email' => APP_EMAIL);
+      $subject = "Welcome to " . APP_NAME;
+      $body = "Hi, " . $_POST['user_name'] . ".";
+      $body .= "Thank you for signing up with " . APP_NAME;
+      $email = Email::send($to, $from, $subject, $body, false); 
+
       // send new user to edit_profile
       Router::redirect('/users/edit_profile/new-user/' .
         $_POST['user_name']);
