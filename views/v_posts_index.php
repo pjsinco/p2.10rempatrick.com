@@ -5,7 +5,7 @@
     <?php if (isset($posts)): ?>
       <?php foreach ($posts as $post): ?>
       <article>
-        <h3><a href="/users/index/<?=$post['user_name']?>"><?=$post['user_name']?></a> <span class="less-emph">said:</span></h3>
+        <h3><a href="/users/index/<?=$post['user_name']?>"><?=$post['user_name']?></a></h3>
         <p><?=$post['content']?></p>
         <time datetime="<?=Time::Display($post['created'], 'Y-m-d G:i', $user->timezone);?>">
           <small><?=Time::time_ago($post['created'])?></small>
