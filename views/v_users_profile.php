@@ -1,15 +1,3 @@
-<div class='grid_12 spacer'></div>
-<!-- <div class='prefix_4 grid_4 suffix_4'></div> -->
-<div class='prefix_1 grid_6'>
-  <div class='display'>
-    <?=$add_post?>
-  </div>
-  <div class='display'>
-    <?=$stream?>
-  </div>
-</div>
-<div class='grid_4 suffix_1'>
-  <div class='display'>
     <?php if (isset($peeker) && $peeker == true): ?>
 <!--     a peeker is looking at a profile -->
     <h1 class='user_name'><?=$user_name?></h1>
@@ -26,14 +14,10 @@
     <p>Email: <strong><?=$user->email?></strong></p>
     <p>Location: <strong><?=$user->location?></strong></p>
     <p>Bio: <strong><?=$user->bio?></strong></p><br>
-    <p><a class='btn' href='/users/edit_profile/<?=$user->user_name?>'>Edit profile</a></p>
+    <p><a href='/users/edit_profile/<?=$user->user_name?>'>Edit profile</a></p>
     <?php endif; ?>
   </div>
-<div class='prefix 8 grid_4'>
-  <div class="display">
     Following: <?=$following_count?>
     Followers: <?=$followers_count?>
     Posts: <?=$post_count?>
-  </div>
-</div>
 </div>

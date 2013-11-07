@@ -1,6 +1,7 @@
 <div class='grid_12 spacer'></div>
-<div class='prefix_2 grid_8 suffix_2'>
+<div class='prefix_1 grid_6'>
   <div class='display'>
+    <h1>Recently on ArgyBargy</h1>
     <?php if (isset($posts)): ?>
       <?php foreach ($posts as $post): ?>
       <article>
@@ -14,5 +15,10 @@
     <?php else: ?>
       <p>No posts to display.</p>
     <?php endif; ?>
+  </div>
+</div>
+<div class='grid_4 suffix_1'>
+  <div class='display'>
+    <?=$profile?>
   </div>
 </div>

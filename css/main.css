@@ -568,9 +568,31 @@ nav li {
   left: -82px;
 }
 
+.people {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.people li {
+  margin: 8px 0 0 0;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #ddd;
+  
+}
+
+.unfollow {
+  color: #a2b8b4;
+}
+
+.action {
+  display: block;
+  float: right;
+}
+
 .less-emph, {
   font-weight: normal;
   color: #b3b3b3;
+  /*color: fuchsia;*/
 }
 
 .meta {

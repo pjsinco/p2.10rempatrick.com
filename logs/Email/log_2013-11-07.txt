@@ -26,3 +26,17 @@
       WHERE user_id =  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3<h2>Query History</h2>0 = SELECT *
 					FROM users
 					WHERE token = 'c 
+2013-11-07 11:02:13 - INFO --> -------------------------- 
+2013-11-07 11:02:13 - INFO --> Controller/Method: users/index 
+2013-11-07 11:02:13 - INFO --> OUTGOING EMAILS ARE DISABLED. THIS EMAIL WAS NOT SENT TO THE RECIPIENTS, ONLY psinco+argybargy@gmail.com 
+2013-11-07 11:02:13 - INFO --> From: ArgyBargy (psinco@gmail.com) 
+2013-11-07 11:02:13 - INFO --> To: ArgyBargy (psinco+argybargy@gmail.com),  
+2013-11-07 11:02:13 - INFO --> CC:  
+2013-11-07 11:02:13 - INFO --> BCC:  
+2013-11-07 11:02:13 - INFO --> Subject: ArgyBargy SQL Error 
+2013-11-07 11:02:13 - INFO --> Body: <h2>SQL Error</h2> 
+      SELECT count(*)
+      FROM posts
+      WHERE user_id =  You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3<h2>Query History</h2>0 = SELECT *
+					FROM users
+					WHERE token = '2 

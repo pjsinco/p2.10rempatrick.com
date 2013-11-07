@@ -1,9 +1,11 @@
 <div class='grid_12 spacer'></div>
 <!-- <div class='prefix_4 grid_4 suffix_4'></div> -->
 <div class='prefix_1 grid_6'>
+  <?php if(!isset($peeker)): ?>
   <div class='display'>
     <?=$add_post?>
   </div>
+  <?php endif; ?>
   <div class='display'>
     <?php if (isset($peeker) && $peeker == true): ?>
     <h1>Posted by <?=$user_name?></h1>

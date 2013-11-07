@@ -1,12 +1,9 @@
   <div class='clearfix'></div>
   <div class='prefix_1 grid_7'>
 <!--     <h1>Welcome to</h1> -->
-    <img class='center' src='/images/welcome2.gif' width="500px" alt='ArgyBargy logo'>
+  <?php if (!$user): ?>
+    <img class='center' src='/images/argybargy508.gif' width="500px" alt='ArgyBargy logo'>
   </div>
-  <?php if ($user): ?>
-  
-  <?php else: ?>
-  
   <?php endif; ?>
   <div class='grid_3 suffix_1'>
     <?php if (!$user): ?>

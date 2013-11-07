@@ -64,12 +64,17 @@ class posts_controller extends base_controller
     // set up the body
     $this->template->content = View::instance('v_posts_index');
 
-    // build the query
-    //$q = "
-      //select p.content
-      //from posts p inner join users u
-        //on p.user_id = p.user_id
-      //where p.user_id = " . $this->user->user_id;
+    // get and pass user's counts to profile view
+    $counts = Utilities::get_counts($this->user->user_id);
+    $this->template->content->profile = View::instance('v_users_profile');
+    $this->template->content->profile->following_count = 
+      $counts['following_count'];
+    $this->template->content->profile->followers_count = 
+      $counts['followers_count'];
+    $this->template->content->profile->post_count = 
+      $counts['post_count'];
+       
+
     $q = "
       SELECT p.content, u.user_name, p.created
       FROM posts p INNER JOIN users u

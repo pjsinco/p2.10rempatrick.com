@@ -14,7 +14,9 @@
 <body>	
 <div class='container_12'>
 <div class='prefix_1 grid_3' id='menu'>
+<?php if ($user): ?>
   <a href="/" title='Welcome to ArgyBargy'><img src='/images/argybargy150.gif' alt='ArgyBargy logo'></a>
+<?php endif; ?>
 </div>
 <!--        menu for logged-in users -->
 <nav class='prefix_3 grid_5'>

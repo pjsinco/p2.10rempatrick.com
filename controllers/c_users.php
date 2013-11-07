@@ -47,7 +47,7 @@ class users_controller extends base_controller
     }
 
     // 2. if user_name is taken, send error message
-    if ($this->username_exists($_POST['user_name'])) {
+    if (Utilities::username_exists($_POST['user_name'])) {
       Router::redirect('/users/signup/username_exists');
     }
 
@@ -238,7 +238,7 @@ class users_controller extends base_controller
     $user_id = DB::instance(DB_NAME)->select_field($q);
   
     // get post, follower, following counts
-    $counts = $this->get_counts($user_id);
+    $counts = Utilities::get_counts($user_id);
 
     // get stream for user
     $q = "
@@ -326,12 +326,22 @@ class users_controller extends base_controller
 
     // set up the body
     $this->template->content = View::instance('v_users_users');
-  
+    // add user's profile sidebar
+    $this->template->content->profile = View::instance('v_users_profile');
+    // pass followers count to v_users_profile
+    $counts = Utilities::get_counts($this->user->user_id);
+    $this->template->content->profile->following_count = 
+      $counts['following_count'];
+    $this->template->content->profile->followers_count = 
+      $counts['followers_count'];
+    $this->template->content->profile->post_count = 
+      $counts['post_count'];
+ 
     // get all users
-    $users = $this->get_users($this->user->user_id);
+    $users = Utilities::get_users($this->user->user_id);
 
     // get user's connections
-    $connections = $this->get_connections($this->user->user_id);
+    $connections = Utilities::get_connections($this->user->user_id);
     
     // pass array of users, connections to view
     $this->template->content->users = $users;
@@ -342,107 +352,6 @@ class users_controller extends base_controller
 
   }
 
-  /*-----------------------------------------------------------------
-  Get counts of posts, followers and followings for user
-  Param:
-    $user_id string
-  Returns:
-    associative array of counts:
-    (
-      'post_count' => ..., 
-      'followers_count' => ..., 
-      'following_count' => ...
-    )
-  -----------------------------------------------------------------*/
-  private function get_counts($user_id) 
-  {
-    // get count of posts
-    $q = "
-      SELECT count(*)
-      FROM posts
-      WHERE user_id = " . $user_id;
-    $post_count = DB::instance(DB_NAME)->select_field($q);
-
-    // get count of followers
-    $q = "
-      SELECT count(*)
-      FROM users_users
-      WHERE user_id_followed = " . $user_id;
-    $followers_count = DB::instance(DB_NAME)->select_field($q);
-
-    // get count of followings
-    $q = "
-      SELECT count(*)
-      FROM users_users
-      WHERE user_id = " . $user_id;
-    $following_count = DB::instance(DB_NAME)->select_field($q);
-
-    return array(
-      'post_count' => $post_count,
-      'followers_count' => $followers_count,
-      'following_count' => $following_count
-    );
-    
-  }
-  
-  /*------------------------------------------
-    Purpose: Check to see if a user_name exists
-    Params: 
-      $user_name String
-    Returns: boolean
-  /*------------------------------------------*/
-  private function username_exists($user_name)
-  {
-    $q = "
-      SELECT user_name
-      FROM users
-      WHERE user_name = '" . $user_name . "'
-    ";
-
-    $result = DB::instance(DB_NAME)->select_field($q);
-    return ($result == null ? False : True);
-  }
-
-  
-  /*-----------------------------------------------------------------
-  Get array of user's connections
-  Param:
-    $user_id string
-  Returns:
-    array of user's connections
-  -----------------------------------------------------------------*/
-  private function get_connections($user_id)
-  {
-    // figure out connections user has
-    // iow, who are they following?
-    $q = "
-      SELECT *
-      FROM users_users
-      WHERE user_id = " . $this->user->user_id;
-
-    // get array of all people user is following
-    return DB::instance(DB_NAME)->select_array($q, 'user_id_followed');
-  }
-
-  /*-----------------------------------------------------------------
-  Get list of all users
-  Param:
-    $user_id string
-  Returns:
-    array of all user names and id's, excluding the user whose
-    id is passed in
-  -----------------------------------------------------------------*/
-  private function get_users($user_id)
-  {
-    // get list of all users
-    // build query; be sure to not include $this->user
-    $q = "
-      select user_name, user_id
-      from users
-      where user_id != " . $user_id;
-
-    return DB::instance(DB_NAME)->select_rows($q, 'assoc');
-  }
   
 } // eoc
 ?>

@@ -24,7 +24,8 @@ class index_controller extends base_controller
 
     // if the user is logged in, instead route to user's home page
     if ($this->user) {
-      Router::redirect('/users/index/' . $this->user->user_name);
+      //Router::redirect('/users/index/' . $this->user->user_name);
+      Router::redirect('/posts/index/' . $this->user->user_name);
     }
   
     # Render the view
