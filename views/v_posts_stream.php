@@ -3,10 +3,10 @@
     <?php if (isset($posts) && count($posts) > 0): ?>
       <?php foreach ($posts as $post): ?>
     <article>
-      <h1><a href="/users/index/<?=$post['user_name']?>"><?=$post['user_name']?></a> said:</h1>
+      <h3><a href="/users/index/<?=$post['user_name']?>"><?=$post['user_name']?></a> <!--<span class='less-emph'>said:</span>--></h3>
       <p><?=$post['content']?></p>
       <time datetime="<?=Time::Display($post['created'], 'Y-m-d G:i', $user->timezone);?>">
-        <small><?=Time::time_ago($post['created'])?></small>
+        <p class='meta'><?=Time::time_ago($post['created'])?></p>
       </time>
     </article>
       <?php endforeach; ?>

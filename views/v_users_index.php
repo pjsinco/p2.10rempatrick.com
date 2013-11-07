@@ -5,6 +5,11 @@
     <?=$add_post?>
   </div>
   <div class='display'>
+    <?php if (isset($peeker) && $peeker == true): ?>
+    <h1>Posted by <?=$user_name?></h1>
+    <?php else: ?>
+    <h1>Your stream</h1>
+    <?php endif; ?>
     <?=$stream?>
   </div>
 </div>
@@ -13,7 +18,7 @@
     <?php if (isset($peeker) && $peeker == true): ?>
 <!--     a peeker is looking at a profile -->
     <h1 class='user_name'><?=$user_name?></h1>
-    <p>First name: <strong><?=$first_name?></strong></p>
+    <p><span class='less-emph'>First name:</span> <strong><?=$first_name?></strong></p>
     <p>Last name: <strong><?=$last_name?></strong></p>
     <p>Location: <strong><?=$location?></strong></p>
     <p>Bio: <strong><?=$bio?></strong></p><br>

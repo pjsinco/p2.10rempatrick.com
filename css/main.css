@@ -393,6 +393,10 @@ p {
   margin: 0;
 }
 
+h3 {
+  margin: 7px 0 3px 0;
+}
+
 .display {
   background-color: white;
   padding: 10px;
@@ -403,7 +407,7 @@ p {
 }
 
 article {
-  padding: 0 0 24px 0;
+  padding: 0 0 10px 0;
   border-bottom: 1px solid #ddd;
 }
 
@@ -544,3 +548,35 @@ textarea.post {
   height: 50px;
 }
 
+nav {
+  /*display: block;*/
+  height: 30px;
+}
+
+nav ul {
+  margin: 0;
+  padding: 5px 0 5px 30px;
+  list-style-type: none;
+  position: relative;
+}
+
+nav li {
+  /*display: inline;*/
+  margin-left: 30px;
+  float: right;
+  position: relative;
+  left: -82px;
+}
+
+.less-emph, {
+  font-weight: normal;
+  color: #b3b3b3;
+}
+
+.meta {
+  color: #b3b3b3;
+  font-size: 13px;
+  padding: 0;
+  line-height: 17px;
+  /*margin: 0;*/
+}

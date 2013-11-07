@@ -250,8 +250,7 @@ class users_controller extends base_controller
         u.user_name
       FROM posts p LEFT JOIN users_users uu
         ON p.user_id = uu.user_id_followed LEFT JOIN users u
-        ON p.user_id = u.user_id
-      WHERE uu.user_id = '" . $user_id . "' 
+        ON p.user_id = u.user_id WHERE uu.user_id = '" . $user_id . "' 
         OR p.user_id = '" . $user_id ."' 
       ORDER BY p.created DESC
     ";
@@ -269,6 +268,7 @@ class users_controller extends base_controller
           SELECT user_id
           FROM users
           WHERE user_name = '" . $user_name . "'
+        ORDER BY p.created DESC
         )
       ";
       $user_posts = DB::instance(DB_NAME)->select_rows($q);

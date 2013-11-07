@@ -17,17 +17,20 @@
   <a href="/" title='Welcome to ArgyBargy'><img src='/images/argybargy150.gif' alt='ArgyBargy logo'></a>
 </div>
 <!--        menu for logged-in users -->
-<div class='prefix_3 grid_5'>
+<nav class='prefix_3 grid_5'>
+  <ul>
   <?php if($user): ?>
-    <a href='/users/users'>People</a>
-    <a href='/users/logout'>Logout</a>
-    <a href='/users/index/<?=$user->user_name;?>'><?=$user->user_name?></a>
+    <li><a href='/users/index/<?=$user->user_name;?>'>
+      <strong><?=$user->user_name?></strong></a></li>
+    <li><a href='/users/logout'>Logout</a></li>
+    <li><a href='/users/users'>People</a></li>
 <!--        menu for non-logged-in users -->
   <?php else: ?>
 <!--     <a href='/users/signup'>Sign up</a> -->
 <!--     <a href='/users/login'>Log in</a> -->
   <?php endif; ?>
-</div>
+  </ul>
+</nav>
 
 <?php if(isset($content)) echo $content; ?>
 

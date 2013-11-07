@@ -7,3 +7,12 @@
 2013-11-06 17:57:52 - INFO --> BCC:  
 2013-11-06 17:57:52 - INFO --> Subject: Welcome to ArgyBargy 
 2013-11-06 17:57:52 - INFO --> Body: Hi, billypumpkin.Thank you for signing up with ArgyBargy 
+2013-11-06 18:33:28 - INFO --> -------------------------- 
+2013-11-06 18:33:28 - INFO --> Controller/Method: users/p_signup 
+2013-11-06 18:33:28 - INFO --> OUTGOING EMAILS ARE DISABLED. THIS EMAIL WAS NOT SENT TO THE RECIPIENTS, ONLY psinco+argybargy@gmail.com 
+2013-11-06 18:33:28 - INFO --> From: ArgyBargy (psinco@gmail.com) 
+2013-11-06 18:33:28 - INFO --> To: ImAUserWithAReallyLongUserNameToSeeWhatHappens (psinco+longname@gmail.com),  
+2013-11-06 18:33:28 - INFO --> CC:  
+2013-11-06 18:33:28 - INFO --> BCC:  
+2013-11-06 18:33:28 - INFO --> Subject: Welcome to ArgyBargy 
+2013-11-06 18:33:28 - INFO --> Body: Hi, ImAUserWithAReallyLongUserNameToSeeWhatHappens.Thank you for signing up with ArgyBargy 

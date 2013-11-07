@@ -1,5 +1,5 @@
 <div class='grid_12 spacer'></div>
-<div class='prefix_2 grid_8 suffix_2'>
+<div class='prefix_1 grid_10 suffix_1'>
   <div class='display'>
     <?php if (isset($users)): ?>
       <h1>Browse people</h1>
