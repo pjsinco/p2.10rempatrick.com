@@ -80,6 +80,7 @@ class posts_controller extends base_controller
       FROM posts p INNER JOIN users u
         ON p.user_id = u.user_id
       ORDER BY p.created DESC
+      LIMIT 10
     ";
 
     $posts = DB::instance(DB_NAME)->select_rows($q, 'assoc');    

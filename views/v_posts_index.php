@@ -6,8 +6,8 @@
       <article>
         <h3><a href="/users/index/<?=$post['user_name']?>"><?=$post['user_name']?></a></h3>
         <p><?=$post['content']?></p>
-        <time datetime="<?=Time::Display($post['created'], 'Y-m-d G:i', $user->timezone);?>">
-          <small><?=Time::time_ago($post['created'])?></small>
+        <time class='meta' datetime="<?=Time::Display($post['created'], 'Y-m-d G:i', $user->timezone);?>">
+          <?=Time::time_ago($post['created'])?>
         </time>
       </article>
       <?php endforeach; ?>
