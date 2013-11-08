@@ -57,8 +57,6 @@ class posts_controller extends base_controller
   {
     // set up the head
     $this->template->title = APP_NAME . " | Recent posts";
-    $this->template->client_files_head = 
-      Utils::load_client_files($client_files_head);
 
     // set up the body
     $this->template->content = View::instance('v_posts_index');
