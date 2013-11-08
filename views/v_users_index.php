@@ -1,4 +1,3 @@
-<div class='grid_12 spacer'></div>
 <!-- <div class='prefix_4 grid_4 suffix_4'></div> -->
 <div class='prefix_1 grid_6'>
   <?php if(!isset($peeker)): ?>
@@ -33,15 +32,11 @@
     <p>Email: <strong><?=$user->email?></strong></p>
     <p>Location: <strong><?=$user->location?></strong></p>
     <p>Bio: <strong><?=$user->bio?></strong></p><br>
-    <p><a class='btn' href='/users/edit_profile/<?=$user->user_name?>'>Edit profile</a></p>
+    <p><a class='edit' href='/users/edit_profile/<?=$user->user_name?>'>Edit profile</a></p>
     <?php endif; ?>
   </div>
-<div class='grid_4'>
-<!--   <div class="display"> -->
     Following: <?=$following_count?>
     Followers: <?=$followers_count?>
     Posts: <?=$post_count?>
-<!--   </div> -->
-</div>
 </div>
 

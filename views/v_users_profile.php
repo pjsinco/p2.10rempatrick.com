@@ -14,10 +14,12 @@
     <p>Email: <strong><?=$user->email?></strong></p>
     <p>Location: <strong><?=$user->location?></strong></p>
     <p>Bio: <strong><?=$user->bio?></strong></p><br>
-    <p><a href='/users/edit_profile/<?=$user->user_name?>'>Edit profile</a></p>
+    <p><a class='edit' href='/users/edit_profile/<?=$user->user_name?>'>Edit profile</a></p>
     <?php endif; ?>
   </div>
-    Following: <?=$following_count?>
-    Followers: <?=$followers_count?>
-    Posts: <?=$post_count?>
+  <div class='sub-sidebar'>
+    <div class='sub-sidebar1'>Following <br><span class='count'><?=$following_count?></span></div>
+    <div class='sub-sidebar2'>Followers <br><span class='count'><?=$followers_count?></span></div>
+    <div class='sub-sidebar3'>Posts <br><span class='count'><?=$post_count?></span></div>
+  </div>
 </div>

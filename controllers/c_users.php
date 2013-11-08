@@ -277,8 +277,10 @@ class users_controller extends base_controller
     // pass data to the view
     $this->template->content = View::instance('v_users_index');
     $this->template->content->post_count = $counts['post_count'];
-    $this->template->content->followers_count = $counts['followers_count'];
-    $this->template->content->following_count = $counts['following_count'];
+    $this->template->content->followers_count =
+      $counts['followers_count'];
+    $this->template->content->following_count = 
+      $counts['following_count'];
 
     // set up stream view 
     $this->template->content->stream = View::instance('v_posts_stream');

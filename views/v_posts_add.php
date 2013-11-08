@@ -8,5 +8,5 @@
           <textarea class='post' name='content'></textarea>
         </p>
         <input type='submit' class='submit' value='Post'>
-      <fieldset>
+      </fieldset>
     </form>

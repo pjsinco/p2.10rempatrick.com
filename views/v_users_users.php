@@ -1,4 +1,3 @@
-<div class='grid_12 spacer'></div>
 <div class='prefix_1 grid_6'>
   <div class='display'>
     <?php if (isset($users)): ?>

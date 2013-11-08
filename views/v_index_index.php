@@ -31,5 +31,7 @@
         </fieldset>
       </form>
     </div>
+    <p class='description'>+1 Display/edit profile</p>
+    <p class='description'>+1 Confirmation email on sign-up</p>
     <?php endif; ?>
   </div>
