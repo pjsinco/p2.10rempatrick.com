@@ -354,6 +354,56 @@ class users_controller extends base_controller
 
   }
 
+  public function following($user_name = NULL)
+  {
+    $this->template->title = APP_NAME . ' | Following';
+
+    // set up followings view
+    $this->template->content = View::instance('v_users_following');
+
+    // set up profile view
+    $this->template->content->profile = View::instance('v_users_profile');
+
+    if ($user_name != $this->user->user_name) {
+      $counts = Utilities::get_counts(Utilities::get_user_id($user_name));
+      $q = "
+        SELECT first_name, last_name, email, location, bio
+        FROM users
+        WHERE user_name = '" . $user_name . "'
+      ";
+      $user = DB::instance(DB_NAME)->select_row($q, 'assoc');
+      if ($user) {
+        // peeker is a flag for the view to check
+        $this->template->content->profile->peeker = true;
+        $this->template->content->profile->user_name = $user_name;
+        $this->template->content->profile->first_name = $user['first_name'];
+        $this->template->content->profile->last_name = $user['last_name'];
+        $this->template->content->profile->location = $user['location'];
+        $this->template->content->profile->bio = $user['bio'];
+        $this->template->content->user_name = $user_name;
+      } 
+    } else {
+      $counts = Utilities::get_counts($this->user->user_id);
+      $this->template->content->user_name = $this->user->user_name;
+    }
+
+    $this->template->content->users = Utilities::get_users($this->user->user_id);
+    $this->template->content->profile->following_count = 
+      $counts['following_count'];
+    $this->template->content->profile->followers_count = 
+      $counts['followers_count'];
+    $this->template->content->profile->post_count = 
+      $counts['post_count'];
+ 
+    // if user (peeker) is looking at someone else's (peeked) profile ...
+    // pass peeked's profile info to view 
+
+    $user_id = Utilities::get_user_id($user_name);
+    $connections = Utilities::get_connections($user_id);
+    $this->template->content->connections = $connections;
+
+    echo $this->template;
+  }
   
 } // eoc
 ?>

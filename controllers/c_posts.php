@@ -56,8 +56,7 @@ class posts_controller extends base_controller
   public function index() 
   {
     // set up the head
-    $this->template->title = APP_NAME . " | All posts";
-    $client_files_head = Array('/css/main.css');
+    $this->template->title = APP_NAME . " | Recent posts";
     $this->template->client_files_head = 
       Utils::load_client_files($client_files_head);
 

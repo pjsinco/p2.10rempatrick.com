@@ -3,7 +3,7 @@
 class Utilities
 {
   /*-----------------------------------------------------------------
-  Get array of user's connections
+  Gets array of user's connections
   Param:
     $user_id string
   Returns:
@@ -23,7 +23,7 @@ class Utilities
   }
 
   /*-----------------------------------------------------------------
-  Get counts of posts, followers and followings for user
+  Gets counts of posts, followers and followings for user
   Param:
     $user_id string
   Returns:
@@ -66,7 +66,7 @@ class Utilities
   }
   
   /*------------------------------------------
-    Purpose: Check to see if a user_name exists
+    Checks to see if a user_name exists
     Params: 
       $user_name String
     Returns: boolean
@@ -84,7 +84,7 @@ class Utilities
   }
 
   /*-----------------------------------------------------------------
-  Get list of all users
+  Gets list of all users
   Param:
     $user_id string
   Returns:
@@ -101,6 +101,23 @@ class Utilities
       where user_id != " . $user_id;
 
     return DB::instance(DB_NAME)->select_rows($q, 'assoc');
+  }
+
+  /*-----------------------------------------------------------------
+  Gets user_id for passed-in user_name
+  Param:
+    $user_name string
+  Returns:
+    the user_id of the user whose user_name was passed in
+  -----------------------------------------------------------------*/
+  public static function get_user_id($user_name)
+  {
+    $q = "
+      SELECT user_id
+      FROM users
+      WHERE user_name = '" . $user_name . "'
+    ";
+  return DB::instance(DB_NAME)->select_field($q);
   }
 }
 ?>
