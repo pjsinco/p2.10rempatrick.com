@@ -22,6 +22,14 @@ class posts_controller extends base_controller
     // set up the body
     $this->template->content = View::instance('v_posts_add');
 
+    $client_files_body = Array(
+      '/js/jquery.form.js',
+      '/js/posts_add.js'
+    );
+
+    $this->template->client_files_body = 
+      Utils::load_client_files($client_files_body);
+    
     // pass error to view
     $this->template->content->error = $error;
 
@@ -42,7 +50,10 @@ class posts_controller extends base_controller
     $rows = DB::instance(DB_NAME)->insert('posts', $_POST);
 
     if ($rows > 0) {
-      Router::redirect('/users/index/' . $this->user->user_name);
+      $view = new View('v_posts_p_add');
+      $view->created = Time::display(Time::now());
+      echo $view;
+     //Router::redirect('/users/index/' . $this->user->user_name);
       //echo "Your post has been added.";
       //echo "<a href='/posts/add'>Add another</a>";
     } else {

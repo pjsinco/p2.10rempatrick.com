@@ -9,4 +9,5 @@
         </p>
         <input type='submit' class='submit' value='Post'>
       </fieldset>
+      <div id='results'></div>
     </form>
